@@ -121,8 +121,8 @@ CREATE TABLE IF NOT EXISTS `tripon`.`members` (
   `role` ENUM('ADMIN', 'USER') NOT NULL,
   `profile_picture_original` VARCHAR(500) NULL DEFAULT NULL,
   `profile_picture_modify` VARCHAR(500) NULL DEFAULT NULL,
-  `created_at` DATETIME NOT NULL,
-  `updated_at` DATETIME NULL DEFAULT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NULL DEFAULT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`email`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
@@ -138,8 +138,8 @@ CREATE TABLE IF NOT EXISTS `tripon`.`reviews` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `member_email` VARCHAR(50) NOT NULL,
   `title` VARCHAR(300) NOT NULL,
-  `created_at` DATETIME NOT NULL,
-  `updated_at` DATETIME NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   INDEX `member_email` (`member_email` ASC) VISIBLE,
   CONSTRAINT `reviews_ibfk_1`
@@ -161,8 +161,8 @@ CREATE TABLE IF NOT EXISTS `tripon`.`comments` (
   `parent_id` INT NOT NULL,
   `member_id` INT NOT NULL,
   `content` VARCHAR(255) NOT NULL,
-  `created_at` DATETIME NOT NULL,
-  `updated_at` DATETIME NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   INDEX `review_id` (`review_id` ASC) VISIBLE,
   CONSTRAINT `comments_ibfk_1`
@@ -185,8 +185,8 @@ CREATE TABLE IF NOT EXISTS `tripon`.`custom_attractions` (
   `si_gun_gu_code` INT NULL DEFAULT NULL,
   `latitude` DECIMAL(20,17) NULL DEFAULT NULL,
   `longitude` DECIMAL(20,17) NULL DEFAULT NULL,
-  `created_at` DATETIME NULL DEFAULT NULL,
-  `updated_at` DATETIME NULL DEFAULT NULL,
+  `created_at` DATETIME NULL DEFAULT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NULL DEFAULT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   INDEX `area_code` (`area_code` ASC) VISIBLE,
   INDEX `sigungu_code` (`si_gun_gu_code` ASC) VISIBLE,
@@ -211,8 +211,8 @@ CREATE TABLE IF NOT EXISTS `tripon`.`liked_reviews` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `email` VARCHAR(50) NOT NULL,
   `review_id` INT NOT NULL,
-  `created_at` DATETIME NOT NULL,
-  `updated_at` DATETIME NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   INDEX `email` (`email` ASC) VISIBLE,
   INDEX `review_id` (`review_id` ASC) VISIBLE,
@@ -237,8 +237,8 @@ CREATE TABLE IF NOT EXISTS `tripon`.`notices` (
   `email` VARCHAR(50) NOT NULL,
   `title` VARCHAR(255) NOT NULL,
   `content` VARCHAR(500) NOT NULL,
-  `created_at` DATETIME NOT NULL,
-  `updated_at` DATETIME NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   INDEX `email` (`email` ASC) VISIBLE,
   CONSTRAINT `notices_ibfk_1`
@@ -259,8 +259,8 @@ CREATE TABLE IF NOT EXISTS `tripon`.`reviewdetails` (
   `review_id` INT NOT NULL,
   `day` INT NOT NULL,
   `content` VARCHAR(10000) NOT NULL,
-  `created_at` DATETIME NOT NULL,
-  `updated_at` DATETIME NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   INDEX `review_id` (`review_id` ASC) VISIBLE,
   CONSTRAINT `reviewdetails_ibfk_1`
@@ -281,8 +281,8 @@ CREATE TABLE IF NOT EXISTS `tripon`.`pictures` (
   `reviewdetail_id` INT NOT NULL,
   `picture_original` VARCHAR(500) NOT NULL,
   `picture_modify` VARCHAR(500) NOT NULL,
-  `created_at` DATETIME NOT NULL,
-  `updated_at` DATETIME NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   INDEX `reviewdetail_id` (`reviewdetail_id` ASC) VISIBLE,
   CONSTRAINT `pictures_ibfk_1`
@@ -305,8 +305,8 @@ CREATE TABLE IF NOT EXISTS `tripon`.`plans` (
   `start_date` DATE NOT NULL,
   `end_date` DATE NOT NULL,
   `memo` VARCHAR(255) NULL DEFAULT NULL,
-  `created_at` DATETIME NOT NULL,
-  `updated_at` DATETIME NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   INDEX `email` (`email` ASC) VISIBLE,
   CONSTRAINT `plans_ibfk_1`
@@ -326,8 +326,8 @@ CREATE TABLE IF NOT EXISTS `tripon`.`plandetails` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `plan_id` INT NOT NULL,
   `day` INT NOT NULL,
-  `created_at` DATETIME NOT NULL,
-  `updated_at` DATETIME NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   INDEX `plan_id` (`plan_id` ASC) VISIBLE,
   CONSTRAINT `plandetails_ibfk_1`
@@ -347,8 +347,8 @@ CREATE TABLE IF NOT EXISTS `tripon`.`plan_attractions` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `plandetail_id` INT NOT NULL,
   `attraction_id` INT NOT NULL,
-  `created_at` DATETIME NOT NULL,
-  `updated_at` DATETIME NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   INDEX `plan_attractions_ibfk_1_idx` (`plandetail_id` ASC) VISIBLE,
   CONSTRAINT `plan_attractions_ibfk_1`
@@ -368,8 +368,8 @@ CREATE TABLE IF NOT EXISTS `tripon`.`review_attractions` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `reviewdetail_id` INT NOT NULL,
   `attraction_id` INT NOT NULL,
-  `created_at` DATETIME NOT NULL,
-  `updated_at` DATETIME NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   INDEX `reviewdetail_id` (`reviewdetail_id` ASC) VISIBLE,
   INDEX `attraction_no` (`attraction_id` ASC) VISIBLE,
@@ -393,8 +393,8 @@ CREATE TABLE IF NOT EXISTS `tripon`.`tags` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `review_id` INT NOT NULL,
   `content` VARCHAR(255) NOT NULL,
-  `created_at` DATETIME NOT NULL,
-  `updated_at` DATETIME NOT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   INDEX `review_id` (`review_id` ASC) VISIBLE,
   CONSTRAINT `tags_ibfk_1`
@@ -408,3 +408,9 @@ COLLATE = utf8mb4_0900_ai_ci;
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
+insert into members (email, name, password, role) values ('admin@ssafy.com', 'admin', '1234', 'ADMIN');
+insert into plans (email, title, start_date, end_date, memo) 
+values ('admin@ssafy.com', 'admin', '2025-04-01', '2025-04-04', '첫번째 계획!');
+
+select * from plans;

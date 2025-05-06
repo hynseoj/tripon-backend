@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.ssafy.tripon.attraction.domain.CustomAttractionRepository">
+
+	<insert id="saveCustomAttraction"
+		parameterType="CustomAttraction" useGeneratedKeys="true"
+		keyProperty="id">
+		insert into custom_attractions (title, area_code, si_gun_gu_code, latitude, longitude)
+		values (#{title}, #{areaCode}, #{siGunGuCode}, #{latitude}, #{longitude})
+	</insert>
+
+	<select id="findAllCustomAttraction"
+		parameterType="com.ssafy.tripon.attraction.application.command.AttractionFindCommand"
+		resultType="CustomAttraction">
+		select title, area_code as areaCode, si_gun_gu_code as siGunGuCode,
+		latitude, longitude
+		from
+		custom_attractions
+		<where>
+			<if test="areaCode != null">
+				AND area_code = #{areaCode}
+			</if>
+			<if test="keyword != null and keyword != ''">
+				AND title LIKE CONCAT('%', #{keyword}, '%')
+			</if>
+			<if test="siGunGuCode != null">
+				AND si_gun_gu_code = #{siGunGuCode}
+			</if>
+		</where>
+	</select>
+
+	<select id="findCustomAttraction" parameterType="com.ssafy.tripon.attraction.application.command.AttractionSaveCommand">
+		select title, area_code as areaCode, si_gun_gu_code as siGunGuCode,
+		latitude, longitude
+		from
+		custom_attractions
+		<where>
+			<if test="title != null">
+				AND title = #{title}
+			</if>
+			<if test="areaCode != null">
+				AND area_code = #{areaCode}
+			</if>
+			<if test="siGunGuCode != null">
+				AND si_gun_gu_code = #{siGunGuCode}
+			</if>
+		</where>
+	</select>
+
+</mapper>

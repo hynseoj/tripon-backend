@@ -9,16 +9,18 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Review {
+public class ReviewDetail {
 
     private Integer id;
-    private String memberEmail;
-    private String title;
+    private Integer reviewId;
+    private Integer day;
+    private String content;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
-    public Review(String memberEmail, String title) {
-        this.memberEmail = memberEmail;
-        this.title = title;
+    public ReviewDetail(Integer reviewId, Integer day, String content) {
+        this.reviewId = reviewId;
+        this.day = day;
+        this.content = content;
     }
 }

@@ -1,5 +1,7 @@
 package com.ssafy.tripon.review.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.ssafy.tripon.review.application.command.ReviewSaveCommand;
 import com.ssafy.tripon.review.application.command.ReviewSaveCommand.ReviewDetailSaveCommand;
 import com.ssafy.tripon.review.domain.ReviewAttractionRepository;
@@ -55,6 +57,6 @@ class ReviewServiceTest {
         Integer reviewId = reviewService.saveReview(command);
 
         // then
-        // 아직 조회 기능 미구현으로 DB에서 직접 확인함..
+        assertThat(reviewId).isNotNull();
     }
 }

@@ -1,5 +1,7 @@
 package com.ssafy.tripon.review.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.ssafy.tripon.review.application.command.ReviewSaveCommand;
 import com.ssafy.tripon.review.application.command.ReviewSaveCommand.ReviewDetailSaveCommand;
 import com.ssafy.tripon.review.domain.ReviewAttractionRepository;
@@ -9,12 +11,10 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
-@Rollback(value = false)
 class ReviewServiceTest {
 
     @Autowired
@@ -55,6 +55,6 @@ class ReviewServiceTest {
         Integer reviewId = reviewService.saveReview(command);
 
         // then
-        // 아직 조회 기능 미구현으로 DB에서 직접 확인함..
+        assertThat(reviewId).isNotNull();
     }
 }

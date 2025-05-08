@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ssafy.tripon.review.domain.ReviewAttractionRepository">
+<mapper namespace="com.ssafy.tripon.reviewattraction.domain.ReviewAttractionRepository">
 
     <insert id="save" parameterType="ReviewAttraction" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO review_attractions (reviewdetail_id, attraction_id)

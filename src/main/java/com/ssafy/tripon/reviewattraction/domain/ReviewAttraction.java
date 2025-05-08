@@ -1,4 +1,4 @@
-package com.ssafy.tripon.review.domain;
+package com.ssafy.tripon.reviewattraction.domain;
 
 import java.time.LocalDateTime;
 import lombok.AccessLevel;

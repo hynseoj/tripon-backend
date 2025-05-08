@@ -1,4 +1,4 @@
-package com.ssafy.tripon.review.domain;
+package com.ssafy.tripon.reviewattraction.domain;
 
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;

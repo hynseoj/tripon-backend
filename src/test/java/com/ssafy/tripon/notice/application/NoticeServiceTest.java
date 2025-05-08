@@ -1,18 +1,16 @@
 package com.ssafy.tripon.notice.application;
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import com.ssafy.tripon.notice.application.command.NoticeSaveCommand;
 import com.ssafy.tripon.notice.application.command.NoticeUpdateCommand;
 import com.ssafy.tripon.notice.domain.Notice;
 import com.ssafy.tripon.notice.domain.NoticeRepository;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 @SpringBootTest
 @Transactional

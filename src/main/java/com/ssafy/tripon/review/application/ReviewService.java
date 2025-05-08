@@ -1,12 +1,10 @@
 package com.ssafy.tripon.review.application;
 
 import com.ssafy.tripon.review.application.command.ReviewSaveCommand;
+import com.ssafy.tripon.review.application.command.ReviewUpdateCommand;
 import com.ssafy.tripon.review.domain.Review;
-import com.ssafy.tripon.review.domain.ReviewAttraction;
-import com.ssafy.tripon.review.domain.ReviewAttractionRepository;
-import com.ssafy.tripon.review.domain.ReviewDetail;
-import com.ssafy.tripon.review.domain.ReviewDetailRepository;
 import com.ssafy.tripon.review.domain.ReviewRepository;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,32 +15,30 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
-    private final ReviewDetailRepository reviewDetailRepository;
-    private final ReviewAttractionRepository reviewAttractionRepository;
 
     public Integer saveReview(ReviewSaveCommand command) {
-        // review 저장
         Review review = command.toReview();
         reviewRepository.save(review);
-        Integer reviewId = review.getId();
+        return review.getId();
+    }
 
-                command.details().stream()
-                .forEach(detail -> {
-                    // review_detail 저장
-                    ReviewDetail reviewDetail = detail.toReviewDetail(reviewId);
-                    reviewDetailRepository.save(reviewDetail);
-                    Integer reviewDetailId = reviewDetail.getId();
+    public List<ReviewServiceResponse> findAllReviews() {
+        return reviewRepository.findAll().stream()
+                .map(ReviewServiceResponse::from)
+                .toList();
+    }
 
-                    // review_attraction 저장
-                    detail.attractions()
-                            .forEach(attractionId -> {
-                                ReviewAttraction reviewAttraction = new ReviewAttraction(reviewDetailId, attractionId);
-                                reviewAttractionRepository.save(reviewAttraction);
-                            });
+    public ReviewServiceResponse findReview(Integer id) {
+        return ReviewServiceResponse.from(reviewRepository.findById(id));
+    }
 
-                    // @Todo: picture 처리 & 저장 구현하기
-                });
+    public ReviewServiceResponse updateReview(ReviewUpdateCommand command) {
+        Review review = command.toReview();
+        reviewRepository.update(review);
+        return ReviewServiceResponse.from(review);
+    }
 
-        return reviewId;
+    public void deleteReview(Integer id) {
+        reviewRepository.deleteById(id);
     }
 }

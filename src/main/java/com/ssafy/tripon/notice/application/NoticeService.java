@@ -22,7 +22,7 @@ public class NoticeService {
         return NoticeServiceResponse.from(notice);
     }
 
-    public List<NoticeServiceResponse> findAllNotice() {
+    public List<NoticeServiceResponse> findAllNotices() {
         return noticeRepository.findAll().stream()
                 .map(NoticeServiceResponse::from)
                 .toList();

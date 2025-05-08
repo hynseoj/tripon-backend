@@ -1,17 +1,18 @@
 package com.ssafy.tripon.notice.application;
 
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-
 import com.ssafy.tripon.notice.application.command.NoticeSaveCommand;
 import com.ssafy.tripon.notice.application.command.NoticeUpdateCommand;
 import com.ssafy.tripon.notice.domain.Notice;
 import com.ssafy.tripon.notice.domain.NoticeRepository;
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 @SpringBootTest
 @Transactional
@@ -44,7 +45,7 @@ class NoticeServiceTest {
         noticeService.saveNotice(new NoticeSaveCommand("admin@ssafy.com", "제목2", "내용2"));
 
         // when
-        List<NoticeServiceResponse> notices = noticeService.findAllNotice();
+        List<NoticeServiceResponse> notices = noticeService.findAllNotices();
 
         // then
         assertThat(notices).hasSizeGreaterThanOrEqualTo(2);
@@ -84,7 +85,7 @@ class NoticeServiceTest {
         noticeService.deleteNoticeById(saved.id());
 
         // then
-        List<NoticeServiceResponse> notices = noticeService.findAllNotice();
+        List<NoticeServiceResponse> notices = noticeService.findAllNotices();
         assertThat(notices.stream().anyMatch(n -> n.id().equals(saved.id()))).isFalse();
     }
 }

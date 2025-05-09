@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.tripon.reviewattraction.domain.ReviewAttractionRepository">
+
+    <insert id="save" parameterType="ReviewAttraction" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO review_attractions (reviewdetail_id, attraction_id)
+        VALUES (#{reviewDetailId}, #{attractionId})
+    </insert>
+
+    <select id="findAllByReviewDetailId" parameterType="Integer" resultType="ReviewAttraction">
+        SELECT id, reviewdetail_id as reviewDetailId, attraction_id as attractionId, created_at as createdAt, updated_at as updatedAt
+        FROM review_attractions
+        WHERE reviewdetail_id = #{reviewDetailId}
+    </select>
+
+    <delete id="deleteAllByReviewDetailId" parameterType="Integer">
+        DELETE FROM review_attractions
+        WHERE reviewdetail_id = #{reviewDetailId}
+    </delete>
+</mapper>

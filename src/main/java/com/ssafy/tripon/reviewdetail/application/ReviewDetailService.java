@@ -1,6 +1,8 @@
 package com.ssafy.tripon.reviewdetail.application;
 
 import com.ssafy.tripon.common.utils.FileStorageService;
+import com.ssafy.tripon.reviewattraction.domain.ReviewAttraction;
+import com.ssafy.tripon.reviewattraction.domain.ReviewAttractionRepository;
 import com.ssafy.tripon.reviewdetail.application.command.ReviewDetailSaveCommand;
 import com.ssafy.tripon.reviewdetail.domain.ReviewDetail;
 import com.ssafy.tripon.reviewdetail.domain.ReviewDetailRepository;
@@ -19,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ReviewDetailService {
 
     private final ReviewDetailRepository reviewDetailRepository;
+    private final ReviewAttractionRepository reviewAttractionRepository;
     private final ReviewPictureRepository reviewPictureRepository;
 
     private final FileStorageService fileStorageService;
@@ -27,6 +30,12 @@ public class ReviewDetailService {
         ReviewDetail reviewDetail = command.toReviewDetail();
         reviewDetailRepository.save(reviewDetail);
 
+        // reviewdetails-attractions
+        for (Integer attractionId : command.attractions()) {
+            reviewAttractionRepository.save(new ReviewAttraction(reviewDetail.getId(), attractionId));
+        }
+
+        // reviewdetails-pictures
         List<String> pictures = new ArrayList<>();
         for (MultipartFile image : images) {
             String storedUrl = fileStorageService.upload(image);

@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 public interface ReviewDetailRepository {
 
     void save(ReviewDetail reviewDetail);
-    List<ReviewDetail> findAll();
+    List<Integer> findAllIdByReviewId(Integer reviewId);
     ReviewDetail findById(Integer id);
     void update(ReviewDetail reviewDetail);
     void deleteById(Integer id);

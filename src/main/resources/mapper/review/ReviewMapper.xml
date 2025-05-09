@@ -17,7 +17,7 @@
     <select id="findById" parameterType="Integer" resultType="Review">
         SELECT id, member_email as memberEmail, title, created_at as createdAt, updated_at as updatedAt
         FROM reviews
-        WHERE #{id}
+        WHERE id = #{id}
     </select>
 
     <update id="update" parameterType="Review">

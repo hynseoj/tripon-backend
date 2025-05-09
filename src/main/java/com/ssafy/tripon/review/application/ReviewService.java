@@ -4,6 +4,7 @@ import com.ssafy.tripon.review.application.command.ReviewSaveCommand;
 import com.ssafy.tripon.review.application.command.ReviewUpdateCommand;
 import com.ssafy.tripon.review.domain.Review;
 import com.ssafy.tripon.review.domain.ReviewRepository;
+import com.ssafy.tripon.reviewdetail.domain.ReviewDetailRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReviewService {
 
     private final ReviewRepository reviewRepository;
+    private final ReviewDetailRepository reviewDetailRepository;
 
     public Integer saveReview(ReviewSaveCommand command) {
         Review review = command.toReview();
@@ -29,7 +31,7 @@ public class ReviewService {
     }
 
     public ReviewServiceResponse findReview(Integer id) {
-        return ReviewServiceResponse.from(reviewRepository.findById(id));
+        return ReviewServiceResponse.from(reviewRepository.findById(id), reviewDetailRepository.findAllIdByReviewId(id));
     }
 
     public ReviewServiceResponse updateReview(ReviewUpdateCommand command) {

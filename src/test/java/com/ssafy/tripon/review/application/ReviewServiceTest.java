@@ -6,6 +6,8 @@ import com.ssafy.tripon.review.application.command.ReviewSaveCommand;
 import com.ssafy.tripon.review.application.command.ReviewUpdateCommand;
 import com.ssafy.tripon.review.domain.Review;
 import com.ssafy.tripon.review.domain.ReviewRepository;
+import com.ssafy.tripon.reviewdetail.domain.ReviewDetail;
+import com.ssafy.tripon.reviewdetail.domain.ReviewDetailRepository;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,9 @@ class ReviewServiceTest {
 
     @Autowired
     private ReviewRepository reviewRepository;
+
+    @Autowired
+    private ReviewDetailRepository reviewDetailRepository;
 
     @Test
     void 리뷰를_저장할_수_있다() {
@@ -53,12 +58,16 @@ class ReviewServiceTest {
     void 리뷰를_아이디로_조회할_수_있다() {
         // given
         int savedId = reviewService.saveReview(new ReviewSaveCommand("admin@ssafy.com", "첫 리뷰입니다."));
+        reviewDetailRepository.save(new ReviewDetail(savedId, 1, "첫 째날"));
+        reviewDetailRepository.save(new ReviewDetail(savedId, 2, "둘 째날"));
 
         // when
         ReviewServiceResponse response = reviewService.findReview(savedId);
 
         // then
         assertThat(response.title()).isEqualTo("첫 리뷰입니다.");
+        assertThat(response.details()).isNotNull();
+        assertThat(response.details()).hasSize(2);
     }
 
     @Test

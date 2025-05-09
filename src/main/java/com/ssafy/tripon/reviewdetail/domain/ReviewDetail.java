@@ -23,4 +23,11 @@ public class ReviewDetail {
         this.day = day;
         this.content = content;
     }
+
+    public ReviewDetail(Integer id, Integer reviewId, Integer day, String content) {
+        this.id = id;
+        this.reviewId = reviewId;
+        this.day = day;
+        this.content = content;
+    }
 }

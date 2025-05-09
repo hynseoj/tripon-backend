@@ -3,7 +3,10 @@ package com.ssafy.tripon.reviewdetail.presentation;
 import com.ssafy.tripon.reviewdetail.application.ReviewDetailService;
 import com.ssafy.tripon.reviewdetail.application.ReviewDetailServiceResponse;
 import com.ssafy.tripon.reviewdetail.presentation.request.ReviewDetailSaveRequest;
+import com.ssafy.tripon.reviewdetail.presentation.request.ReviewDetailUpdateRequest;
+import com.ssafy.tripon.reviewdetail.presentation.response.ReviewDetailFindResponse;
 import com.ssafy.tripon.reviewdetail.presentation.response.ReviewDetailSaveResponse;
+import com.ssafy.tripon.reviewdetail.presentation.response.ReviewDetailUpdateResponse;
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +31,7 @@ public class ReviewDetailController {
     @PostMapping
     public ResponseEntity<ReviewDetailSaveResponse> saveReviewDetail(
             @PathVariable(value = "reviewId") Integer reviewId,
-            @RequestPart(value = "reviewDetail")ReviewDetailSaveRequest request,
+            @RequestPart(value = "reviewDetail") ReviewDetailSaveRequest request,
             @RequestPart(value = "images") List<MultipartFile> pictures
     ) {
         ReviewDetailServiceResponse response = reviewDetailService.saveReviewDetail(
@@ -38,20 +41,25 @@ public class ReviewDetailController {
     }
 
     @GetMapping("/{reviewDetailId}")
-    public ResponseEntity<Void> findReviewDetail(@PathVariable(value = "reviewDetailId") Integer reviewDetailId) {
-//        reviewDetailService.
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<ReviewDetailFindResponse> findReviewDetail(@PathVariable(value = "reviewDetailId") Integer reviewDetailId) {
+        ReviewDetailServiceResponse response = reviewDetailService.findReviewDetail(reviewDetailId);
+        return ResponseEntity.ok(ReviewDetailFindResponse.from(response));
     }
 
-    // 임시
     @PutMapping("/{reviewDetailId}")
-    public ResponseEntity<Void> updateReviewDetail( @PathVariable(value = "reviewDetailId") Integer reviewDetailId) {
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<ReviewDetailUpdateResponse> updateReviewDetail(
+            @PathVariable(value = "reviewId") Integer reviewId,
+            @PathVariable(value = "reviewDetailId") Integer reviewDetailId,
+            @RequestPart(value = "reviewDetail") ReviewDetailUpdateRequest request,
+            @RequestPart(value = "images") List<MultipartFile> pictures
+    ) {
+        ReviewDetailServiceResponse response = reviewDetailService.updateReviewDetail(request.toCommand(reviewDetailId, reviewId), pictures);
+        return ResponseEntity.ok(ReviewDetailUpdateResponse.from(response));
     }
 
-    // 임시
     @DeleteMapping("/{reviewDetailId}")
     public ResponseEntity<Void> deleteReviewDetail(@PathVariable(value = "reviewDetailId") Integer reviewDetailId) {
+        reviewDetailService.deleteReviewDetailById(reviewDetailId);
         return ResponseEntity.noContent().build();
     }
 }

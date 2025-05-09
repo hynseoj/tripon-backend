@@ -6,6 +6,7 @@ import com.ssafy.tripon.common.utils.FileStorageService;
 import com.ssafy.tripon.reviewattraction.domain.ReviewAttraction;
 import com.ssafy.tripon.reviewattraction.domain.ReviewAttractionRepository;
 import com.ssafy.tripon.reviewdetail.application.command.ReviewDetailSaveCommand;
+import com.ssafy.tripon.reviewdetail.application.command.ReviewDetailUpdateCommand;
 import com.ssafy.tripon.reviewdetail.domain.ReviewDetail;
 import com.ssafy.tripon.reviewdetail.domain.ReviewDetailRepository;
 import com.ssafy.tripon.reviewpicture.domain.ReviewPicture;
@@ -47,15 +48,70 @@ public class ReviewDetailService {
             pictures.add(storedUrl);
             reviewPictureRepository.save(new ReviewPicture(reviewDetail.getId(), image.getOriginalFilename(), storedUrl));
         }
+
         return ReviewDetailServiceResponse.from(reviewDetail, attractions, pictures);
     }
 
-//    public ReviewDetailSaveResponse findReviewDetail(Integer id) {
-//        ReviewDetail reviewDetail = reviewDetailRepository.findById(id);
-//
-//        // reviewdetails-attractions
-//
-//
-//        // reviewdetails-pictures
-//    }
+    public ReviewDetailServiceResponse findReviewDetail(Integer id) {
+        ReviewDetail reviewDetail = reviewDetailRepository.findById(id);
+
+        // reviewdetails-attractions
+        List<ReviewAttraction> reviewAttractions = reviewAttractionRepository.findAllByReviewDetailId(id);
+        List<Attraction> attractions = new ArrayList<>();
+        for (ReviewAttraction reviewAttraction : reviewAttractions) {
+            attractions.add(attractionRepository.findAttractionById(reviewAttraction.getAttractionId()));
+        }
+
+        // reviewdetails-pictures
+        List<ReviewPicture> reviewPictures = reviewPictureRepository.findAllByReviewDetailId(id);
+        List<String> pictures = new ArrayList<>();
+        for (ReviewPicture reviewPicture : reviewPictures) {
+            pictures.add(reviewPicture.getUrl());
+        }
+
+        return ReviewDetailServiceResponse.from(reviewDetail, attractions, pictures);
+    }
+
+    public ReviewDetailServiceResponse updateReviewDetail(ReviewDetailUpdateCommand command, List<MultipartFile> images) {
+        ReviewDetail reviewDetail = command.toReviewDetail();
+        reviewDetailRepository.update(reviewDetail);
+
+        // S3에서 파일 삭제
+        List<ReviewPicture> reviewPictures = reviewPictureRepository.findAllByReviewDetailId(reviewDetail.getId());
+        for (ReviewPicture reviewPicture : reviewPictures) {
+            fileStorageService.delete(reviewPicture.getUrl());
+        }
+        // 기존 데이터 삭제
+        reviewAttractionRepository.deleteAllByReviewDetailId(reviewDetail.getId());
+        reviewPictureRepository.deleteAllByReviewDetailId(reviewDetail.getId());
+
+        // reviewdetails-attractions
+        List<Attraction> attractions = new ArrayList<>();
+        for (Integer attractionId : command.attractions()) {
+            reviewAttractionRepository.save(new ReviewAttraction(reviewDetail.getId(), attractionId));
+            attractions.add(attractionRepository.findAttractionById(attractionId));
+        }
+
+        // reviewdetails-pictures
+        List<String> pictures = new ArrayList<>();
+        for (MultipartFile image : images) {
+            String storedUrl = fileStorageService.upload(image);
+            pictures.add(storedUrl);
+            reviewPictureRepository.save(new ReviewPicture(reviewDetail.getId(), image.getOriginalFilename(), storedUrl));
+        }
+
+        return ReviewDetailServiceResponse.from(reviewDetail, attractions, pictures);
+    }
+
+    public void deleteReviewDetailById(Integer id) {
+        // S3에서 파일 삭제
+        List<ReviewPicture> reviewPictures = reviewPictureRepository.findAllByReviewDetailId(id);
+        for (ReviewPicture reviewPicture : reviewPictures) {
+            fileStorageService.delete(reviewPicture.getUrl());
+        }
+
+        reviewAttractionRepository.deleteAllByReviewDetailId(id);
+        reviewPictureRepository.deleteAllByReviewDetailId(id);
+        reviewDetailRepository.deleteById(id);
+    }
 }

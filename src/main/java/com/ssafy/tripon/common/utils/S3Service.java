@@ -1,12 +1,12 @@
 package com.ssafy.tripon.common.utils;
 
+import java.io.IOException;
+import java.util.UUID;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectResult;
-import java.io.IOException;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -39,5 +39,11 @@ public class S3Service implements FileStorageService {
         }
 
         return amazonS3.getUrl(bucketName, modifiedName).toString();
+    }
+
+    @Override
+    public void delete(String url) {
+        String fileName = url.substring(url.lastIndexOf("/") + 1);
+        amazonS3.deleteObject(bucketName, fileName);
     }
 }

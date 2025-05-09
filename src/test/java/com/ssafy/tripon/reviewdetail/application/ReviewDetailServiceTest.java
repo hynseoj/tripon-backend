@@ -6,6 +6,7 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import com.ssafy.tripon.common.utils.FileStorageService;
 import com.ssafy.tripon.reviewattraction.domain.ReviewAttractionRepository;
 import com.ssafy.tripon.reviewdetail.application.command.ReviewDetailSaveCommand;
+import com.ssafy.tripon.reviewdetail.application.command.ReviewDetailUpdateCommand;
 import com.ssafy.tripon.reviewdetail.domain.ReviewDetailRepository;
 import com.ssafy.tripon.reviewpicture.domain.ReviewPictureRepository;
 import java.io.File;
@@ -72,4 +73,64 @@ class ReviewDetailServiceTest {
         // 출력: S3 URL 확인
         System.out.println("S3 URL: " + response.pictures().get(0));
     }
+
+    @Test
+    void 일차별_리뷰를_아이디로_조회할_수_있다() throws Exception {
+        // given
+        List<Integer> attractionIds = List.of(1001, 1002);
+        ReviewDetailSaveCommand command = new ReviewDetailSaveCommand(31, 1, "조회 테스트", attractionIds);
+
+        ClassPathResource resource = new ClassPathResource("static/test.png");
+        MultipartFile image = new MockMultipartFile("images", resource.getFilename(), "image/png", new FileInputStream(resource.getFile()));
+
+        ReviewDetailServiceResponse saved = reviewDetailService.saveReviewDetail(command, List.of(image));
+
+        // when
+        ReviewDetailServiceResponse found = reviewDetailService.findReviewDetail(saved.id());
+
+        // then
+        assertThat(found.content()).isEqualTo("조회 테스트");
+        assertThat(found.pictures()).hasSize(1);
+        assertThat(found.attractions()).hasSize(2);
+    }
+
+    @Test
+    void 일차별_리뷰를_수정할_수_있다() throws Exception {
+        // given
+        ReviewDetailSaveCommand saveCommand = new ReviewDetailSaveCommand(31, 1, "수정 전", List.of(1001));
+        MultipartFile image = new MockMultipartFile("images", "test.png", "image/png", new FileInputStream(new ClassPathResource("static/test.png").getFile()));
+        ReviewDetailServiceResponse saved = reviewDetailService.saveReviewDetail(saveCommand, List.of(image));
+
+        // when
+        List<Integer> newAttractionIds = List.of(1001, 1002);
+        ReviewDetailUpdateCommand updateCommand = new ReviewDetailUpdateCommand(saved.id(), 31, 2, "수정 후", newAttractionIds);
+        MultipartFile newImage = new MockMultipartFile("images", "test.png", "image/png", new FileInputStream(new ClassPathResource("static/test.png").getFile()));
+        ReviewDetailServiceResponse updated = reviewDetailService.updateReviewDetail(updateCommand, List.of(newImage));
+
+        // then
+        assertThat(updated.content()).isEqualTo("수정 후");
+        assertThat(updated.attractions()).hasSize(2);
+        assertThat(updated.pictures()).hasSize(1);
+
+        // 출력: S3 URL 확인
+        System.out.println("Original S3 URL: " + saved.pictures().get(0));
+        System.out.println("Updated S3 URL: " + updated.pictures().get(0));
+    }
+
+    @Test
+    void 일차별_리뷰를_삭제할_수_있다() throws Exception {
+        // given
+        ReviewDetailSaveCommand command = new ReviewDetailSaveCommand(31, 1, "삭제 테스트", List.of(1001));
+        MultipartFile image = new MockMultipartFile("images", "test.png", "image/png", new FileInputStream(new ClassPathResource("static/test.png").getFile()));
+        ReviewDetailServiceResponse saved = reviewDetailService.saveReviewDetail(command, List.of(image));
+
+        // when
+        reviewDetailService.deleteReviewDetailById(saved.id());
+
+        // then
+        assertThat(reviewDetailRepository.findById(saved.id())).isNull();
+        assertThat(reviewAttractionRepository.findAllByReviewDetailId(saved.id())).isEmpty();
+        assertThat(reviewPictureRepository.findAllByReviewDetailId(saved.id())).isEmpty();
+    }
+
 }

@@ -62,7 +62,7 @@ class ReviewDetailServiceTest {
         // then
         assertThat(response).isNotNull();
         assertThat(response.pictures()).hasSize(1);
-        assertThat(response.attractions()).containsExactlyInAnyOrderElementsOf(attractionIds);
+        assertThat(response.attractions()).hasSize(2);
 
         // 실제로 저장된 리뷰, 사진, 관광지 연관 데이터 확인
         assertThat(reviewDetailRepository.findById(response.id())).isNotNull();

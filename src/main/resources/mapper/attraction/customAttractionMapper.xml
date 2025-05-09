@@ -50,4 +50,10 @@
 		</where>
 	</select>
 
+	<select id="findAttractionById" parameterType="Integer" resultType="CustomAttraction">
+		SELECT no, title, area_code as areaCode, si_gun_gu_code as siGunGuCode, latitude, longitude
+		FROM custom_attractions
+		WHERE id = #{id}
+	</select>
+
 </mapper>

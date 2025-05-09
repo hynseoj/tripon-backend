@@ -37,9 +37,9 @@ public class ReviewDetailController {
                 .body(ReviewDetailSaveResponse.from(response));
     }
 
-    // 임시
     @GetMapping("/{reviewDetailId}")
     public ResponseEntity<Void> findReviewDetail(@PathVariable(value = "reviewDetailId") Integer reviewDetailId) {
+//        reviewDetailService.
         return ResponseEntity.noContent().build();
     }
 

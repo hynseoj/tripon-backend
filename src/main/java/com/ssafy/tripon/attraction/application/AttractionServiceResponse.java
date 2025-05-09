@@ -13,12 +13,11 @@ public record AttractionServiceResponse(
 ) {
 
 	public static AttractionServiceResponse from(Attraction a) {
+		if (a instanceof CustomAttraction) {
+			return new AttractionServiceResponse(a.getTitle(), a.getAreaCode(), a.getSiGunGuCode(), a.getLatitude(),
+					a.getLongitude(), true);
+		}
 		return new AttractionServiceResponse(a.getTitle(), a.getAreaCode(), a.getSiGunGuCode(), a.getLatitude(),
 				a.getLongitude(), false);
-	}
-
-	public static AttractionServiceResponse from(CustomAttraction c) {
-		return new AttractionServiceResponse(c.getTitle(), c.getAreaCode(), c.getSiGunGuCode(), c.getLatitude(),
-				c.getLongitude(), true);
 	}
 }

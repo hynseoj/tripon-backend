@@ -1,14 +1,12 @@
 package com.ssafy.tripon.attraction.domain;
 
-import java.util.List;
-
-import org.apache.ibatis.annotations.Mapper;
-
 import com.ssafy.tripon.attraction.application.command.AttractionFindCommand;
 import com.ssafy.tripon.attraction.application.command.AttractionSaveCommand;
+import java.util.List;
+import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
-public interface CustomAttractionRepository {
+public interface CustomAttractionRepository extends AttractionRepository {
 
 	// 관광지 조건 조회
 	List<CustomAttraction> findAllCustomAttraction(AttractionFindCommand command);
@@ -18,5 +16,7 @@ public interface CustomAttractionRepository {
 	
 	// 관광지 삽입
 	Integer saveCustomAttraction(CustomAttraction attraction);
+
+	CustomAttraction findAttractionById(Integer id);
 
 }

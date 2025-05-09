@@ -1,5 +1,7 @@
 package com.ssafy.tripon.reviewdetail.application;
 
+import com.ssafy.tripon.attraction.domain.Attraction;
+import com.ssafy.tripon.attraction.domain.AttractionRepository;
 import com.ssafy.tripon.common.utils.FileStorageService;
 import com.ssafy.tripon.reviewattraction.domain.ReviewAttraction;
 import com.ssafy.tripon.reviewattraction.domain.ReviewAttractionRepository;
@@ -23,6 +25,7 @@ public class ReviewDetailService {
     private final ReviewDetailRepository reviewDetailRepository;
     private final ReviewAttractionRepository reviewAttractionRepository;
     private final ReviewPictureRepository reviewPictureRepository;
+    private final AttractionRepository attractionRepository;
 
     private final FileStorageService fileStorageService;
 
@@ -31,8 +34,10 @@ public class ReviewDetailService {
         reviewDetailRepository.save(reviewDetail);
 
         // reviewdetails-attractions
+        List<Attraction> attractions = new ArrayList<>();
         for (Integer attractionId : command.attractions()) {
             reviewAttractionRepository.save(new ReviewAttraction(reviewDetail.getId(), attractionId));
+            attractions.add(attractionRepository.findAttractionById(attractionId));
         }
 
         // reviewdetails-pictures
@@ -42,6 +47,15 @@ public class ReviewDetailService {
             pictures.add(storedUrl);
             reviewPictureRepository.save(new ReviewPicture(reviewDetail.getId(), image.getOriginalFilename(), storedUrl));
         }
-        return ReviewDetailServiceResponse.from(reviewDetail, command.attractions(), pictures);
+        return ReviewDetailServiceResponse.from(reviewDetail, attractions, pictures);
     }
+
+//    public ReviewDetailSaveResponse findReviewDetail(Integer id) {
+//        ReviewDetail reviewDetail = reviewDetailRepository.findById(id);
+//
+//        // reviewdetails-attractions
+//
+//
+//        // reviewdetails-pictures
+//    }
 }

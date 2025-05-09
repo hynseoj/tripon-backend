@@ -43,5 +43,11 @@
 		</where>
 	</select>
 
+	<select id="findAttractionById" parameterType="Integer" resultType="Attraction">
+		SELECT no, title, area_code as areaCode, si_gun_gu_code as siGunGuCode, latitude, longitude
+		FROM attractions
+		WHERE no = #{id}
+	</select>
+
 
 </mapper>

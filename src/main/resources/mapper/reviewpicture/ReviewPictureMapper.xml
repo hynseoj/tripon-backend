@@ -6,7 +6,7 @@
 
     <insert id="save" parameterType="ReviewPicture" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO pictures (reviewdetail_id, picture_original, picture_modify)
-        VALUES (#{reviewDetailId}, #{originalName}, #{originalName})
+        VALUES (#{reviewDetailId}, #{originalName}, #{url})
     </insert>
 
 </mapper>

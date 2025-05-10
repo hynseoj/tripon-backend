@@ -24,12 +24,12 @@ USE `tripon` ;
 DROP TABLE IF EXISTS `tripon`.`contenttypes` ;
 
 CREATE TABLE IF NOT EXISTS `tripon`.`contenttypes` (
-  `content_type_id` INT NOT NULL,
-  `content_type_name` VARCHAR(45) NULL DEFAULT NULL,
+  `content_type_id` int NOT NULL comment '콘텐츠타입번호',
+  `content_type_name` varchar(45) DEFAULT NULL comment '콘텐츠타입이름',
   PRIMARY KEY (`content_type_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+COLLATE = utf8mb4_0900_ai_ci comment '콘텐츠타입정보테이블';
 
 
 -- -----------------------------------------------------
@@ -38,35 +38,38 @@ COLLATE = utf8mb4_0900_ai_ci;
 DROP TABLE IF EXISTS `tripon`.`sidos` ;
 
 CREATE TABLE IF NOT EXISTS `tripon`.`sidos` (
-  `no` INT NOT NULL,
-  `sido_code` INT NULL DEFAULT NULL,
-  `sido_name` VARCHAR(20) NULL DEFAULT NULL,
+  `no` int NOT NULL AUTO_INCREMENT  comment '시도번호',
+  `sido_code` int NOT NULL comment '시도코드',
+  `sido_name` varchar(20) DEFAULT NULL comment '시도이름',
   PRIMARY KEY (`no`),
-  UNIQUE INDEX `sido_code` (`sido_code` ASC) VISIBLE)
+  UNIQUE INDEX `sido_code_UNIQUE` (`sido_code` ASC) VISIBLE)
 ENGINE = InnoDB
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+COLLATE = utf8mb4_0900_ai_ci comment '시도정보테이블';
 
 
 -- -----------------------------------------------------
 -- Table `tripon`.`guguns`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tripon`.`guguns` ;
-
 CREATE TABLE IF NOT EXISTS `tripon`.`guguns` (
-  `no` INT NOT NULL,
-  `sido_code` INT NULL DEFAULT NULL,
-  `gugun_code` INT NULL DEFAULT NULL,
-  `gugun_name` VARCHAR(20) NULL DEFAULT NULL,
+  `no` int NOT NULL AUTO_INCREMENT comment '구군번호',
+  `sido_code` int NOT NULL comment '시도코드',
+  `gugun_code` int NOT NULL comment '구군코드',
+  `gugun_name` varchar(20) DEFAULT NULL comment '구군이름',
   PRIMARY KEY (`no`),
-  UNIQUE INDEX `gugun_code` (`gugun_code` ASC) VISIBLE,
-  INDEX `sido_code` (`sido_code` ASC) VISIBLE,
-  CONSTRAINT `guguns_ibfk_1`
+  UNIQUE INDEX `sido_gugun_unique` (`sido_code`, `gugun_code`),
+  INDEX `guguns_sido_to_sidos_code_fk_idx` (`sido_code` ASC) VISIBLE,
+  INDEX `gugun_code_idx` (`gugun_code` ASC) VISIBLE,
+  CONSTRAINT `guguns_sido_to_sidos_code_fk`
     FOREIGN KEY (`sido_code`)
-    REFERENCES `tripon`.`sidos` (`sido_code`))
+    REFERENCES `tripon`.`sidos` (`sido_code`)
+)
 ENGINE = InnoDB
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+COLLATE = utf8mb4_0900_ai_ci
+comment '구군정보테이블';
 
 
 -- -----------------------------------------------------
@@ -75,38 +78,40 @@ COLLATE = utf8mb4_0900_ai_ci;
 DROP TABLE IF EXISTS `tripon`.`attractions` ;
 
 CREATE TABLE IF NOT EXISTS `tripon`.`attractions` (
-  `no` INT NOT NULL,
-  `content_id` INT NULL DEFAULT NULL,
-  `title` VARCHAR(500) NULL DEFAULT NULL,
-  `content_type_id` INT NULL DEFAULT NULL,
-  `area_code` INT NULL DEFAULT NULL,
-  `si_gun_gu_code` INT NULL DEFAULT NULL,
-  `first_image1` VARCHAR(100) NULL DEFAULT NULL,
-  `first_image2` VARCHAR(100) NULL DEFAULT NULL,
-  `map_level` INT NULL DEFAULT NULL,
-  `latitude` DECIMAL(20,17) NULL DEFAULT NULL,
-  `longitude` DECIMAL(20,17) NULL DEFAULT NULL,
-  `tel` VARCHAR(100) NULL DEFAULT NULL,
-  `addr1` VARCHAR(100) NULL DEFAULT NULL,
-  `addr2` VARCHAR(100) NULL DEFAULT NULL,
-  `homepage` VARCHAR(100) NULL DEFAULT NULL,
-  `overview` VARCHAR(1000) NULL DEFAULT NULL,
+  `no` int NOT NULL AUTO_INCREMENT  comment '명소코드',
+  `content_id` int DEFAULT NULL comment '콘텐츠번호',
+  `title` varchar(500) DEFAULT NULL comment '명소이름',
+  `content_type_id` int DEFAULT NULL comment '콘텐츠타입',
+  `area_code` int DEFAULT NULL comment '시도코드',
+  `si_gun_gu_code` int DEFAULT NULL comment '구군코드',
+  `first_image1` varchar(100) DEFAULT NULL comment '이미지경로1',
+  `first_image2` varchar(100) DEFAULT NULL comment '이미지경로2',
+  `map_level` int DEFAULT NULL comment '줌레벨',
+  `latitude` decimal(20,17) DEFAULT NULL comment '위도',
+  `longitude` decimal(20,17) DEFAULT NULL comment '경도',
+  `tel` varchar(20) DEFAULT NULL comment '전화번호',
+  `addr1` varchar(100) DEFAULT NULL comment '주소1',
+  `addr2` varchar(100) DEFAULT NULL comment '주소2',
+  `homepage` varchar(1000) DEFAULT NULL comment '홈페이지',
+  `overview` varchar(10000) DEFAULT NULL comment '설명',
   PRIMARY KEY (`no`),
-  INDEX `content_type_id` (`content_type_id` ASC) VISIBLE,
-  INDEX `area_code` (`area_code` ASC) VISIBLE,
-  INDEX `sigungu_code` (`si_gun_gu_code` ASC) VISIBLE,
-  CONSTRAINT `attractions_ibfk_1`
-    FOREIGN KEY (`content_type_id`)
-    REFERENCES `tripon`.`contenttypes` (`content_type_id`),
-  CONSTRAINT `attractions_ibfk_2`
+  INDEX `attractions_typeid_to_types_typeid_fk_idx` (`content_type_id` ASC) VISIBLE,
+  INDEX `attractions_sido_to_sidos_code_fk_idx` (`area_code` ASC) VISIBLE,
+  INDEX `attractions_sigungu_to_guguns_gugun_fk_idx` (`si_gun_gu_code` ASC) VISIBLE,
+  CONSTRAINT `attractions_area_to_sidos_code_fk`
     FOREIGN KEY (`area_code`)
     REFERENCES `tripon`.`sidos` (`sido_code`),
-  CONSTRAINT `attractions_ibfk_3`
-    FOREIGN KEY (`si_gun_gu_code`)
-    REFERENCES `tripon`.`guguns` (`gugun_code`))
+  CONSTRAINT `attractions_sigungu_to_guguns_gugun_fk`
+    FOREIGN KEY (`area_code`,`si_gun_gu_code`)
+    REFERENCES `tripon`.`guguns` (`sido_code`, `gugun_code`),
+  CONSTRAINT `attractions_typeid_to_types_typeid_fk`
+    FOREIGN KEY (`content_type_id`)
+    REFERENCES `tripon`.`contenttypes` (`content_type_id`))
 ENGINE = InnoDB
+AUTO_INCREMENT = 1
 DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+COLLATE = utf8mb4_0900_ai_ci
+comment '명소정보테이블';
 
 
 -- -----------------------------------------------------
@@ -159,18 +164,22 @@ CREATE TABLE IF NOT EXISTS `tripon`.`comments` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `review_id` INT NOT NULL,
   `parent_id` INT NOT NULL,
-  `member_id` INT NOT NULL,
+  `member_id` VARCHAR(50) NOT NULL,
   `content` VARCHAR(255) NOT NULL,
   `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  INDEX `review_id` (`review_id` ASC) VISIBLE,
+  INDEX `review_id` (`review_id` ASC),
+  INDEX `member_id` (`member_id` ASC),
   CONSTRAINT `comments_ibfk_1`
     FOREIGN KEY (`review_id`)
-    REFERENCES `tripon`.`reviews` (`id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
+    REFERENCES `tripon`.`reviews` (`id`),
+  CONSTRAINT `comments_ibfk_2`
+    FOREIGN KEY (`member_id`)
+    REFERENCES `tripon`.`members` (`email`)
+) ENGINE = InnoDB
+  DEFAULT CHARACTER SET = utf8mb4
+  COLLATE = utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
@@ -180,26 +189,28 @@ DROP TABLE IF EXISTS `tripon`.`custom_attractions` ;
 
 CREATE TABLE IF NOT EXISTS `tripon`.`custom_attractions` (
   `id` INT NOT NULL AUTO_INCREMENT,
-  `title` VARCHAR(500) NULL DEFAULT NULL,
-  `area_code` INT NULL DEFAULT NULL,
-  `si_gun_gu_code` INT NULL DEFAULT NULL,
-  `latitude` DECIMAL(20,17) NULL DEFAULT NULL,
-  `longitude` DECIMAL(20,17) NULL DEFAULT NULL,
-  `created_at` DATETIME NULL DEFAULT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` DATETIME NULL DEFAULT NULL DEFAULT CURRENT_TIMESTAMP,
+  `title` VARCHAR(500) DEFAULT NULL,
+  `area_code` INT DEFAULT NULL,
+  `si_gun_gu_code` INT DEFAULT NULL,
+  `latitude` DECIMAL(20,17) DEFAULT NULL,
+  `longitude` DECIMAL(20,17) DEFAULT NULL,
+  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  INDEX `area_code` (`area_code` ASC) VISIBLE,
-  INDEX `sigungu_code` (`si_gun_gu_code` ASC) VISIBLE,
+  INDEX `area_code` (`area_code`),
+  INDEX `sigungu_code` (`si_gun_gu_code`),
   CONSTRAINT `custom_attractions_ibfk_1`
     FOREIGN KEY (`area_code`)
     REFERENCES `tripon`.`sidos` (`sido_code`),
   CONSTRAINT `custom_attractions_ibfk_2`
-    FOREIGN KEY (`si_gun_gu_code`)
-    REFERENCES `tripon`.`guguns` (`gugun_code`))
+    FOREIGN KEY (`area_code`, `si_gun_gu_code`)
+    REFERENCES `tripon`.`guguns` (`sido_code`, `gugun_code`)
+)
 ENGINE = InnoDB
 AUTO_INCREMENT = 500000
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
+
 
 
 -- -----------------------------------------------------
@@ -403,33 +414,6 @@ CREATE TABLE IF NOT EXISTS `tripon`.`tags` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
-
--- -----------------------------------------------------
--- View
--- -----------------------------------------------------
-CREATE VIEW unified_attractions_view AS
-SELECT
-    no AS id,
-    'attractions' AS source,
-    title,
-    area_code,
-    si_gun_gu_code,
-    latitude,
-    longitude
-FROM attractions
-
-UNION ALL
-
-SELECT
-    id,
-    'custom' AS source,
-    title,
-    area_code,
-    si_gun_gu_code,
-    latitude,
-    longitude
-FROM custom_attractions;
-
 
 
 SET SQL_MODE=@OLD_SQL_MODE;

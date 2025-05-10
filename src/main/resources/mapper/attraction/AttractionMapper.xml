@@ -24,8 +24,8 @@
 
 	<select id="findAttraction"
 			parameterType="com.ssafy.tripon.attraction.application.command.AttractionSaveCommand"
-			resultType="Attraction">
-		SELECT title, area_code AS areaCode, si_gun_gu_code AS siGunGuCode, latitude, longitude
+			resultType="Integer">
+		SELECT id
 		FROM unified_attractions_view
 		<where>
 			<if test="title != null">

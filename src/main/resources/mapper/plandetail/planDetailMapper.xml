@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.ssafy.tripon.plandetail.domain.PlanDetailRepository">
+
+	<resultMap
+		type="com.ssafy.tripon.plandetail.application.PlanDetailServiceResponse"
+		id="PlanDetailMap">
+		<id property="id" column="detail_id" />
+		<result property="day" column="day" />
+
+		<collection property="attractions"
+			ofType="com.ssafy.tripon.plandetail.application.PlanDetailServiceResponse$PlanAttractionServiceResponse"
+			column="detail_id"
+			javaType="java.util.ArrayList">
+			<result property="title" column="title" />
+			<result property="latitude" column="latitude" />
+			<result property="longitude" column="longitude" />
+		</collection>
+
+	</resultMap>
+
+	<insert id="savePlanDetail" useGeneratedKeys="true"
+		keyProperty="id">
+		insert into plandetails (plan_id, day)
+		values (#{planId},
+		#{day})
+	</insert>
+
+	<select id="findPlanDetailById" parameterType="Integer"
+		resultMap="PlanDetailMap">
+		SELECT
+		d.id AS detail_id,
+		d.day,
+		a.title,
+		a.latitude,
+		a.longitude
+		FROM plandetails d
+		JOIN plan_attractions pa ON d.id = pa.plandetail_id
+		JOIN (
+		SELECT no AS id, title, latitude, longitude FROM attractions
+		UNION
+		SELECT id, title, latitude, longitude FROM custom_attractions
+		) a ON pa.attraction_id = a.id
+		where d.id = #{planDetailId}
+	</select>
+	
+	<delete id="deletePlanDetail">
+		delete from plandetails
+		where id = #{id}
+	</delete>
+</mapper>

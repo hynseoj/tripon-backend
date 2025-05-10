@@ -20,13 +20,14 @@ public class AttractionService {
 	public Integer saveAttraction(AttractionSaveCommand command) {
 		// attractions+custom_attractions에 있는지 확인
 		if (attractionRepository.findAttraction(command) != null) {
-			return null;
-
+			return attractionRepository.findAttraction(command);
 		}
 
 		CustomAttraction customAttraction = command.toCustomAttraction();
+		attractionRepository.saveCustomAttraction(customAttraction);
+		
 		// 없으면 save
-		return attractionRepository.saveCustomAttraction(customAttraction);
+		return customAttraction.getId();
 	}
 
 	// 관광지 조회

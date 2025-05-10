@@ -1,11 +1,13 @@
 package com.ssafy.tripon.plan.presentation.request;
 
+import java.time.LocalDate;
+
 import com.ssafy.tripon.plan.application.command.PlanSaveCommand;
 
 public record PlanSaveRequest(
 		String title,
-		String startDate,
-		String endDate,
+		LocalDate startDate,
+		LocalDate endDate,
 		String memo
 	) {
 	

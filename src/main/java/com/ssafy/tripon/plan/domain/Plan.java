@@ -1,5 +1,6 @@
 package com.ssafy.tripon.plan.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import lombok.AccessLevel;
@@ -14,13 +15,13 @@ public class Plan {
 	private Integer id;
 	private String email;
 	private String title;
-	private String startDate;
-	private String endDate;
+	private LocalDate startDate;
+	private LocalDate endDate;
 	private String memo;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 	
-	public Plan(String email, String title, String startDtate, String endDate, String memo) {
+	public Plan(String email, String title, LocalDate startDtate, LocalDate endDate, String memo) {
 		this.email = email;
 		this.title = title;
 		this.startDate = startDtate;
@@ -28,7 +29,7 @@ public class Plan {
 		this.memo = memo;
 	}
 	
-	public Plan(Integer id, String title, String startDtate, String endDate, String memo) {
+	public Plan(Integer id, String title, LocalDate startDtate, LocalDate endDate, String memo) {
 		this.id = id;
 		this.title = title;
 		this.startDate = startDtate;

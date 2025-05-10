@@ -1,5 +1,6 @@
 package com.ssafy.tripon.plan.application;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import com.ssafy.tripon.plan.domain.Plan;
@@ -7,8 +8,8 @@ import com.ssafy.tripon.plan.domain.Plan;
 public record PlanServiceResponse(
 		Integer planId,
 		String title,
-		String startDate,
-		String endDate,
+		LocalDate startDate,
+		LocalDate endDate,
 		String memo,
 		String createdAt,
 		String updatedAt

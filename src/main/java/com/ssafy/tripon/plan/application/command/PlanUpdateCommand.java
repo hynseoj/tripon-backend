@@ -1,12 +1,14 @@
 package com.ssafy.tripon.plan.application.command;
 
+import java.time.LocalDate;
+
 import com.ssafy.tripon.plan.domain.Plan;
 
 public record PlanUpdateCommand(
 		Integer id,
 		String title,
-		String startDate,
-		String endDate,
+		LocalDate startDate,
+		LocalDate endDate,
 		String memo
 	) {
 	public Plan toPlan() {

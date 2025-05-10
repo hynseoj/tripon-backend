@@ -415,6 +415,31 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
+-- -----------------------------------------------------
+-- View
+-- -----------------------------------------------------
+CREATE VIEW unified_attractions_view AS
+SELECT
+    no AS id,
+    'attractions' AS source,
+    title,
+    area_code,
+    si_gun_gu_code,
+    latitude,
+    longitude
+FROM attractions
+
+UNION ALL
+
+SELECT
+    id,
+    'custom' AS source,
+    title,
+    area_code,
+    si_gun_gu_code,
+    latitude,
+    longitude
+FROM custom_attractions;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

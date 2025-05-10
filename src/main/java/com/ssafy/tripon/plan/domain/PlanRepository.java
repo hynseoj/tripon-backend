@@ -1,0 +1,25 @@
+package com.ssafy.tripon.plan.domain;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+
+@Mapper
+public interface PlanRepository {
+
+	// 계획 생성
+	void savePlan(Plan plan);
+
+	// 계획 전체 조회
+	List<Plan> findAllPlanByMemberId(String memberId);
+
+	// 계획 상세 조회
+	Plan findPlanById(Integer id);
+
+	// 계획 수정
+	void updatePlan(Plan plan);
+
+	// 계획 삭제
+	void deletePlanById(Integer id);
+	
+}

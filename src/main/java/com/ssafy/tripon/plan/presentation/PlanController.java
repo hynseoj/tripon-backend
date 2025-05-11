@@ -21,7 +21,7 @@ import com.ssafy.tripon.plan.presentation.request.PlanSaveRequest;
 import com.ssafy.tripon.plan.presentation.request.PlanUpdateRequest;
 import com.ssafy.tripon.plan.presentation.response.PlanFindAllByMemberIdResponse;
 
-
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -35,7 +35,7 @@ public class PlanController {
 	
 	// 계획 생성
 	@PostMapping
-	public ResponseEntity<Void> savePlan(@RequestBody PlanSaveRequest request) {
+	public ResponseEntity<Void> savePlan(@Valid @RequestBody PlanSaveRequest request) {
 		Integer id = planService.savePlan(request.toCommand(memberId));
 		return  ResponseEntity.created(URI.create("/api/v1/plans" + id)).build();
 	}
@@ -58,7 +58,7 @@ public class PlanController {
 
 	// 계획 수정
 	@PutMapping("/{planId}")
-	public ResponseEntity<Void> updatePlanById(@PathVariable Integer planId, @RequestBody PlanUpdateRequest req) {
+	public ResponseEntity<Void> updatePlanById(@PathVariable Integer planId, @Valid @RequestBody PlanUpdateRequest req) {
 		PlanUpdateCommand command = req.toCommand(planId);
 		planService.updatePlanById(command);
 		return  ResponseEntity.created(URI.create("/api/v1/plans" + planId)).build();

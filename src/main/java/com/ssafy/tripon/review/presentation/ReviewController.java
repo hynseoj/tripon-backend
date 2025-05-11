@@ -7,6 +7,9 @@ import com.ssafy.tripon.review.presentation.request.ReviewUpdateRequest;
 import com.ssafy.tripon.review.presentation.response.ReviewFindAllResponse;
 import com.ssafy.tripon.review.presentation.response.ReviewFindResponse;
 import com.ssafy.tripon.review.presentation.response.ReviewUpdateResponse;
+
+import jakarta.validation.Valid;
+
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +31,7 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @PostMapping
-    public ResponseEntity<Void> saveReview(@RequestBody ReviewSaveRequest request) {
+    public ResponseEntity<Void> saveReview(@Valid @RequestBody ReviewSaveRequest request) {
         Integer id = reviewService.saveReview(request.toCommand("admin@ssafy.com")); // @Todo: 로그인 구현 후 수정
         return ResponseEntity.created(URI.create("/api/v1/reviews" + id)).build();
     }
@@ -48,7 +51,7 @@ public class ReviewController {
     @PutMapping("/{reviewId}")
     public ResponseEntity<ReviewUpdateResponse> updateReview(
             @PathVariable(value = "reviewId") Integer id,
-            @RequestBody ReviewUpdateRequest request
+            @Valid @RequestBody ReviewUpdateRequest request
     ) {
         ReviewServiceResponse response = reviewService.updateReview(request.toCommand(id, "admin@ssafy.com"));
         return ResponseEntity.ok(ReviewUpdateResponse.from(response)); // @Todo: 로그인 구현 후 수정

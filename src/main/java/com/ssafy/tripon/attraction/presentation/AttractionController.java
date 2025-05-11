@@ -15,6 +15,7 @@ import com.ssafy.tripon.attraction.application.command.AttractionFindCommand;
 import com.ssafy.tripon.attraction.presentation.request.AttractionSaveRequest;
 import com.ssafy.tripon.attraction.presentation.response.AttractionFindAllResponse;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -25,7 +26,7 @@ public class AttractionController {
 
 	// 관광지 생성
 	@PostMapping
-	public ResponseEntity<Void> saveAttraction(@RequestBody AttractionSaveRequest request) {
+	public ResponseEntity<Void> saveAttraction(@Valid @RequestBody AttractionSaveRequest request) {
 		Integer id = attractionService.saveAttraction(request.toCommand()) == null ? 0
 				: attractionService.saveAttraction(request.toCommand());
 		return ResponseEntity.created(URI.create("/api/v1/attractions/" + id)).build();

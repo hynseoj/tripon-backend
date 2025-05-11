@@ -7,6 +7,9 @@ import com.ssafy.tripon.reviewdetail.presentation.request.ReviewDetailUpdateRequ
 import com.ssafy.tripon.reviewdetail.presentation.response.ReviewDetailFindResponse;
 import com.ssafy.tripon.reviewdetail.presentation.response.ReviewDetailSaveResponse;
 import com.ssafy.tripon.reviewdetail.presentation.response.ReviewDetailUpdateResponse;
+
+import jakarta.validation.Valid;
+
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +34,8 @@ public class ReviewDetailController {
     @PostMapping
     public ResponseEntity<ReviewDetailSaveResponse> saveReviewDetail(
             @PathVariable(value = "reviewId") Integer reviewId,
-            @RequestPart(value = "reviewDetail") ReviewDetailSaveRequest request,
-            @RequestPart(value = "images") List<MultipartFile> pictures
+            @Valid @RequestPart(value = "reviewDetail") ReviewDetailSaveRequest request,
+            @Valid @RequestPart(value = "images") List<MultipartFile> pictures
     ) {
         ReviewDetailServiceResponse response = reviewDetailService.saveReviewDetail(
                 request.toCommand(reviewId), pictures);
@@ -50,8 +53,8 @@ public class ReviewDetailController {
     public ResponseEntity<ReviewDetailUpdateResponse> updateReviewDetail(
             @PathVariable(value = "reviewId") Integer reviewId,
             @PathVariable(value = "reviewDetailId") Integer reviewDetailId,
-            @RequestPart(value = "reviewDetail") ReviewDetailUpdateRequest request,
-            @RequestPart(value = "images") List<MultipartFile> pictures
+            @Valid @RequestPart(value = "reviewDetail") ReviewDetailUpdateRequest request,
+            @Valid @RequestPart(value = "images") List<MultipartFile> pictures
     ) {
         ReviewDetailServiceResponse response = reviewDetailService.updateReviewDetail(request.toCommand(reviewDetailId, reviewId), pictures);
         return ResponseEntity.ok(ReviewDetailUpdateResponse.from(response));

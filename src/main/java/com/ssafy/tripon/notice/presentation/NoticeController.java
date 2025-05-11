@@ -8,6 +8,9 @@ import com.ssafy.tripon.notice.presentation.response.NoticeFindAllResponse;
 import com.ssafy.tripon.notice.presentation.response.NoticeFindResponse;
 import com.ssafy.tripon.notice.presentation.response.NoticeSaveResponse;
 import com.ssafy.tripon.notice.presentation.response.NoticeUpdateResponse;
+
+import jakarta.validation.Valid;
+
 import java.net.URI;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +32,7 @@ public class NoticeController {
     private static NoticeService noticeService;
 
     @PostMapping
-    public ResponseEntity<NoticeSaveResponse> saveNotice(@RequestBody NoticeSaveRequest request) {
+    public ResponseEntity<NoticeSaveResponse> saveNotice(@Valid @RequestBody NoticeSaveRequest request) {
         NoticeServiceResponse response = noticeService.saveNotice(request.toCommand("admin@ssafy.com")); // @Todo: 로그인 구현 후 수정
         return ResponseEntity.created(URI.create("/api/v1/notices/" + response.id()))
                 .body(NoticeSaveResponse.from(response));
@@ -50,7 +53,7 @@ public class NoticeController {
     @PutMapping("/{noticeId}")
     public ResponseEntity<NoticeUpdateResponse> updateNotice(
             @PathVariable(value = "noticeId") Integer id,
-            @RequestBody NoticeUpdateRequest request
+            @Valid @RequestBody NoticeUpdateRequest request
     ) {
         NoticeServiceResponse response = noticeService.updateNotice(request.toCommand(id, "admin@ssafy.com")); // @Todo: 로그인 구현 후 수정
         return ResponseEntity.ok(NoticeUpdateResponse.from(response));

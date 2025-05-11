@@ -17,6 +17,7 @@ import com.ssafy.tripon.plandetail.presentation.request.PlanDetailSaveRequest;
 import com.ssafy.tripon.plandetail.presentation.request.PlanDetailUpdateRequest;
 import com.ssafy.tripon.plandetail.presentation.response.PlanDetailFindByIdResponse;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -27,7 +28,7 @@ public class PlanDetailController {
 	private final PlanDetailService planDetailService;
 	
 	@PostMapping
-	public ResponseEntity<Void> savePlanDetail(@PathVariable Integer planId, @RequestBody PlanDetailSaveRequest request) {
+	public ResponseEntity<Void> savePlanDetail(@PathVariable Integer planId, @Valid @RequestBody PlanDetailSaveRequest request) {
 		Integer id = planDetailService.savePlanDetail(request.toCommand(planId));
 		return ResponseEntity.created(URI.create("/api/v1/plans/" + planId + "/" + id)).build();
 	}
@@ -39,7 +40,7 @@ public class PlanDetailController {
 	}
 	
 	@PutMapping("/{planDetailId}")
-	public ResponseEntity<Void> updatePlanDetail(@PathVariable Integer planId, @PathVariable Integer planDetailId, @RequestBody PlanDetailUpdateRequest request) {
+	public ResponseEntity<Void> updatePlanDetail(@PathVariable Integer planId, @PathVariable Integer planDetailId, @Valid @RequestBody PlanDetailUpdateRequest request) {
 		planDetailService.updatePlanDetail(request.toCommand(planDetailId));
 		return ResponseEntity.created(URI.create("/api/v1/plans/" + planId + "/" + planDetailId)).build();
 	}

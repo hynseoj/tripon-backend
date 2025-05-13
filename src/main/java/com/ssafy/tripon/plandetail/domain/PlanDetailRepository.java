@@ -14,6 +14,6 @@ public interface PlanDetailRepository {
 	// N일차 계획 수정
 	void updatePlanDetail(PlanDetail command);
 	// N일차 계획 삭제
-	void deletePlanDetail(Integer id);
+	int deletePlanDetail(Integer id);
 
 }

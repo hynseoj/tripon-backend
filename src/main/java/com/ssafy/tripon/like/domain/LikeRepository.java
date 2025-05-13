@@ -8,5 +8,5 @@ public interface LikeRepository {
 
     void save(Like like);
     Integer getCountByReviewId(Integer reviewId);
-    void delete(@Param("reviewId") Integer reviewId, @Param("email") String email);
+    int delete(@Param("reviewId") Integer reviewId, @Param("email") String email);
 }

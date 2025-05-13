@@ -1,5 +1,7 @@
 package com.ssafy.tripon.like.application;
 
+import com.ssafy.tripon.common.exception.CustomException;
+import com.ssafy.tripon.common.exception.ErrorCode;
 import com.ssafy.tripon.like.application.command.LikeSaveCommand;
 import com.ssafy.tripon.like.domain.LikeRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,9 @@ public class LikeService {
     }
 
     public void deleteLike(Integer reviewId, String email) {
-        likeRepository.delete(reviewId, email);
+        int result = likeRepository.delete(reviewId, email);
+        if(result == 0) {
+        	throw new CustomException(ErrorCode.REVIEWS_NOT_FOUND);
+        }
     }
 }

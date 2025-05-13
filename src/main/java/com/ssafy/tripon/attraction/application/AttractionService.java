@@ -5,6 +5,9 @@ import com.ssafy.tripon.attraction.application.command.AttractionSaveCommand;
 import com.ssafy.tripon.attraction.domain.Attraction;
 import com.ssafy.tripon.attraction.domain.AttractionRepository;
 import com.ssafy.tripon.attraction.domain.CustomAttraction;
+import com.ssafy.tripon.common.exception.CustomException;
+import com.ssafy.tripon.common.exception.ErrorCode;
+
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -35,11 +38,13 @@ public class AttractionService {
 		// 각 테이블에서 엔티티 목록 조회
 		List<Attraction> attractions = attractionRepository.findAllAttraction(command);
 
+		// 예외 처리
+		if(attractions.isEmpty()) {
+			throw new CustomException(ErrorCode.ATTRACTIONS_NOT_FOUND);
+		}
+		
 		// 각각 toResponse()로 변환
-		List<AttractionServiceResponse> list = new ArrayList<>();
-		list.addAll(attractions.stream().map(AttractionServiceResponse::from).toList());
-
-		return list;
+		return attractions.stream().map(AttractionServiceResponse::from).toList();
 	}
 
 }

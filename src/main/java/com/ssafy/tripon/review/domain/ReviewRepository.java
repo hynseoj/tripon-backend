@@ -9,6 +9,6 @@ public interface ReviewRepository {
     void save(Review review);
     List<Review> findAll();
     Review findById(Integer id);
-    void update(Review review);
-    void deleteById(Integer id);
+    int update(Review review);
+    int deleteById(Integer id);
 }

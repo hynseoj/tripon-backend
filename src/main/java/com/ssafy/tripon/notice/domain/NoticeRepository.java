@@ -9,6 +9,6 @@ public interface NoticeRepository {
     void save(Notice notice);
     List<Notice> findAll();
     Notice findById(Integer id);
-    void update(Notice notice);
-    void deleteById(Integer id);
+    int update(Notice notice);
+    int deleteById(Integer id);
 }

@@ -17,9 +17,9 @@ public interface PlanRepository {
 	Plan findPlanById(Integer id);
 
 	// 계획 수정
-	void updatePlan(Plan plan);
+	int updatePlan(Plan plan);
 
 	// 계획 삭제
-	void deletePlanById(Integer id);
+	int deletePlanById(Integer id);
 	
 }

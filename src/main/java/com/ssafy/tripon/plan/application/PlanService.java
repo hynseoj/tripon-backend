@@ -1,10 +1,13 @@
 package com.ssafy.tripon.plan.application;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ssafy.tripon.common.exception.CustomException;
+import com.ssafy.tripon.common.exception.ErrorCode;
 import com.ssafy.tripon.plan.application.command.PlanSaveCommand;
 import com.ssafy.tripon.plan.application.command.PlanUpdateCommand;
 import com.ssafy.tripon.plan.domain.Plan;
@@ -30,16 +33,23 @@ public class PlanService {
 	}
 
 	public PlanServiceResponse findPlanById(int id) {
-		Plan plan = planRepository.findPlanById(id);
-		return PlanServiceResponse.from(plan);   
-	} 
+		Plan plan = Optional.ofNullable(planRepository.findPlanById(id))
+				.orElseThrow(() -> (new CustomException(ErrorCode.PLANS_NOT_FOUND)));
+		return PlanServiceResponse.from(plan);
+	}
 
 	public void updatePlanById(PlanUpdateCommand command) {
-		planRepository.updatePlan(command.toPlan());
+		int result = planRepository.updatePlan(command.toPlan());
+		if(result == 0) {
+			throw new CustomException(ErrorCode.PLANS_NOT_FOUND);
+		}
 	}
 
 	public void deletePlanById(Integer id) {
-		planRepository.deletePlanById(id);
+		int result = planRepository.deletePlanById(id);
+		if(result == 0) {
+			throw new CustomException(ErrorCode.PLANS_NOT_FOUND);
+		}
 	}
 
 }

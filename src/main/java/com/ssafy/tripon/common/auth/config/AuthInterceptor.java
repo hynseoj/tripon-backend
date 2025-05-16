@@ -4,8 +4,8 @@ import static com.ssafy.tripon.common.exception.ErrorCode.FORBIDDEN;
 import static com.ssafy.tripon.common.exception.ErrorCode.UNAUTHORIZED;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-import com.ssafy.tripon.common.auth.JwtToken;
 import com.ssafy.tripon.common.auth.JwtTokenProvider;
+import com.ssafy.tripon.common.auth.Token;
 import com.ssafy.tripon.common.auth.TokenBlacklistService;
 import com.ssafy.tripon.common.exception.CustomException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,7 +33,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             throw new CustomException(UNAUTHORIZED);
         }
 
-        JwtToken token = new JwtToken(header.substring(BEARER_PREFIX_LENGTH));
+        Token token = new Token(header.substring(BEARER_PREFIX_LENGTH));
 
         if (blacklistService.isBlacklisted(jwtTokenProvider.getJti(token))) {
             throw new CustomException(FORBIDDEN);

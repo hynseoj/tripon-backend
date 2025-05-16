@@ -1,5 +1,5 @@
 package com.ssafy.tripon.common.auth;
 
-public record JwtToken(String token) {
+public record Token(String token) {
 
 }

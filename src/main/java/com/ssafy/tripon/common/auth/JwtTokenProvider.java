@@ -1,14 +1,14 @@
 package com.ssafy.tripon.common.auth;
 
 import com.ssafy.tripon.member.domain.Member;
+import java.util.Date;
+import java.util.UUID;
+import javax.crypto.SecretKey;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import java.util.Date;
-import java.util.UUID;
-import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -27,13 +27,13 @@ public class JwtTokenProvider {
         this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
-    public JwtToken createAccessToken(Member member) {
+    public Token createAccessToken(Member member) {
         Date now = new Date();
         Date accessTokenExpirationTime = new Date(now.getTime() + accessTokenExpirationMillis);
 
         String jti = UUID.randomUUID().toString();
 
-        return new JwtToken(Jwts.builder()
+        return new Token(Jwts.builder()
                 .setId(jti)
                 .setSubject(member.getEmail())
                 .claim("role", member.getRole())
@@ -42,14 +42,14 @@ public class JwtTokenProvider {
                 .compact());
     }
 
-    public String getJti(JwtToken token) {
+    public String getJti(Token token) {
         Jws<Claims> claims = Jwts.parser()
                 .setSigningKey(secretKey)
                 .parseClaimsJws(token.token());
         return claims.getBody().getId();
     }
 
-    public String getMemberEmail(JwtToken token) {
+    public String getMemberEmail(Token token) {
         return Jwts.parser()
                 .setSigningKey(secretKey)
                 .parseClaimsJws(token.token())
@@ -57,7 +57,7 @@ public class JwtTokenProvider {
                 .getSubject();
     }
 
-    public boolean validateToken(JwtToken token) {
+    public boolean validateToken(Token token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token.token());
             return !claims.getBody().getExpiration().before(new Date());

@@ -18,5 +18,10 @@
         FROM members
         WHERE email = #{email}
     </select>
+    
+    <delete id="deleteByEmail" parameterType="String">
+        DELETE FROM members
+        WHERE email = #{email}
+    </delete>
 
 </mapper>

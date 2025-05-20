@@ -2,12 +2,16 @@ package com.ssafy.tripon.common.auth;
 
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class TokenBlacklistService {
+
+    @Value("${jwt.accessToken.expirationMillis}")
+    private long accessTokenExpirationMillis;
 
     private final RedisTemplate<String, String> redisTemplate;
     private static final String PREFIX = "blacklist:";

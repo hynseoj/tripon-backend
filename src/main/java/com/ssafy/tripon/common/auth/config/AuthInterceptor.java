@@ -43,8 +43,8 @@ public class AuthInterceptor implements HandlerInterceptor {
             throw new CustomException(UNAUTHORIZED);
         }
 
-        String memberEmail = jwtTokenProvider.getMemberEmail(token);
-        request.setAttribute("memberEmail", memberEmail);
+        request.setAttribute("memberEmail", jwtTokenProvider.getMemberEmail(token));
+        request.setAttribute("jwtToken", token);
 
         return true;
     }

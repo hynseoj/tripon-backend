@@ -10,5 +10,5 @@ public interface MemberRepository {
     List<Member> findAll();
     Member findByEmail(String email);
     int update(Member member);
-    int deleteByEmail(String email);
+    void deleteByEmail(String email);
 }

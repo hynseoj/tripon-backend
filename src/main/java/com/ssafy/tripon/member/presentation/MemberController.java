@@ -1,7 +1,11 @@
 package com.ssafy.tripon.member.presentation;
 
+import com.ssafy.tripon.common.auth.Token;
 import com.ssafy.tripon.common.auth.TokenPair;
+import com.ssafy.tripon.common.auth.config.AuthToken;
+import com.ssafy.tripon.common.auth.config.LoginMember;
 import com.ssafy.tripon.member.application.MemberService;
+import com.ssafy.tripon.member.domain.Member;
 import com.ssafy.tripon.member.presentation.request.LoginRequest;
 import com.ssafy.tripon.member.presentation.response.LoginResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,5 +28,9 @@ public class MemberController {
         return ResponseEntity.ok(LoginResponse.from(tokenPair));
     }
 
-
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@LoginMember Member member, @AuthToken Token token) {
+        memberService.logout(member, token);
+        return ResponseEntity.noContent().build();
+    }
 }

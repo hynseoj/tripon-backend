@@ -13,13 +13,13 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 @Component
 @RequiredArgsConstructor
-public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
+public class LoginMemberArgumentResolver implements HandlerMethodArgumentResolver {
 
     private final MemberRepository memberRepository;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        boolean hasAnnotation = parameter.hasParameterAnnotation(Login.class);
+        boolean hasAnnotation = parameter.hasParameterAnnotation(LoginMember.class);
         boolean isEmailType = parameter.getParameterType().equals(Member.class);
         return hasAnnotation && isEmailType;
     }

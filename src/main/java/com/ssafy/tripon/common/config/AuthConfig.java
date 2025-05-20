@@ -1,7 +1,8 @@
 package com.ssafy.tripon.common.config;
 
-import com.ssafy.tripon.common.auth.config.AuthArgumentResolver;
 import com.ssafy.tripon.common.auth.config.AuthInterceptor;
+import com.ssafy.tripon.common.auth.config.AuthTokenArgumentResolver;
+import com.ssafy.tripon.common.auth.config.LoginMemberArgumentResolver;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +18,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class AuthConfig implements WebMvcConfigurer {
 
     private final AuthInterceptor authInterceptor;
-    private final AuthArgumentResolver authArgumentResolver;
+    private final LoginMemberArgumentResolver loginMemberArgumentResolver;
+    private final AuthTokenArgumentResolver authTokenArgumentResolver;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -35,6 +37,7 @@ public class AuthConfig implements WebMvcConfigurer {
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(authArgumentResolver);
+        resolvers.add(authTokenArgumentResolver);
+        resolvers.add(loginMemberArgumentResolver);
     }
 }

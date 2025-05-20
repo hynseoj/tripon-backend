@@ -12,6 +12,8 @@ import com.ssafy.tripon.common.exception.CustomException;
 import com.ssafy.tripon.member.application.command.MemberLoginCommand;
 import com.ssafy.tripon.member.domain.Member;
 import com.ssafy.tripon.member.domain.MemberRepository;
+import java.time.Duration;
+import java.util.Date;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -44,5 +46,17 @@ public class MemberService {
         refreshTokenService.saveRefreshToken(foundMember.getEmail(), refreshToken);
 
         return new TokenPair(accessToken, refreshToken);
+    }
+
+    public void logout(Member member, Token token) {
+        String jti = jwtTokenProvider.getJti(token);
+        Date expiration = jwtTokenProvider.getExpiration(token);
+        long leftTime = expiration.getTime() - System.currentTimeMillis();
+
+        if (leftTime > 0) {
+            blacklistService.blacklistToken(jti, Duration.ofMillis(leftTime));
+        }
+
+        refreshTokenService.deleteRefreshToken(member.getEmail());
     }
 }

@@ -63,6 +63,13 @@ public class JwtTokenProvider {
         return claims.getBody().getId();
     }
 
+    public Date getExpiration(Token token) {
+        return Jwts.parser()
+                .setSigningKey(secretKey)
+                .parseClaimsJws(token.token())
+                .getBody().getExpiration();
+    }
+
     public String getMemberEmail(Token token) {
         return Jwts.parser()
                 .setSigningKey(secretKey)

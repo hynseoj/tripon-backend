@@ -1,5 +1,8 @@
 package com.ssafy.tripon.common.auth;
 
+import static com.ssafy.tripon.common.exception.ErrorCode.ACCESS_TOKEN_EXPIRED;
+
+import com.ssafy.tripon.common.exception.CustomException;
 import com.ssafy.tripon.member.domain.Member;
 import java.util.Date;
 import java.util.UUID;
@@ -81,7 +84,12 @@ public class JwtTokenProvider {
     public boolean validateToken(Token token) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token.token());
-            return !claims.getBody().getExpiration().before(new Date());
+
+            if (claims.getBody().getExpiration().before(new Date())) {
+                throw new CustomException(ACCESS_TOKEN_EXPIRED);
+            }
+
+            return true;
         } catch (JwtException | IllegalArgumentException e) {
             return false;
         }

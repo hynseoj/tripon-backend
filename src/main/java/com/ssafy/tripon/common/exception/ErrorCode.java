@@ -13,6 +13,7 @@ public enum ErrorCode {
 
     // 401 UNAUTHORIZED
     UNAUTHORIZED(401, "인증이 필요합니다."),
+    ACCESS_TOKEN_EXPIRED(401, "토큰이 만료되었습니다."),
 
     // 403 FORBIDDEN
     FORBIDDEN(403, "접근 권한이 없습니다."),

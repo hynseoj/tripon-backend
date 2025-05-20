@@ -450,3 +450,6 @@ insert into plans (email, title, start_date, end_date, memo)
 values ('admin@ssafy.com', 'admin', '2025-04-01', '2025-04-04', '첫번째 계획!');
 
 select * from plans;
+
+ALTER TABLE members
+  MODIFY COLUMN password VARCHAR(255) NOT NULL;

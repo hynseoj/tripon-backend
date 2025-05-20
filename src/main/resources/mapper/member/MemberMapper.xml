@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.tripon.member.domain.MemberRepository">
+
+    <insert id="save" parameterType="Member" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO members (email, name, password, role, profile_picture_original, profile_picture_modify)
+        VALUES (#{email}, #{name}, #{password}, #{role}, #{profileImageName}, #{profileImageUrl})
+    </insert>
+
+    <select id="findByEmail" parameterType="String" resultType="Member">
+        SELECT email, name, password, role,
+               profile_picture_original AS profileImageName,
+               profile_picture_modify AS profileImageUrl,
+               created_at AS createdAt,
+               updated_at AS updatedAt
+        FROM members
+        WHERE email = #{email}
+    </select>
+
+</mapper>

@@ -1,11 +1,9 @@
 package com.ssafy.tripon.member.presentation;
 
-import com.ssafy.tripon.common.auth.Token;
+import com.ssafy.tripon.common.auth.TokenPair;
 import com.ssafy.tripon.member.application.MemberService;
-import com.ssafy.tripon.member.domain.Member;
 import com.ssafy.tripon.member.presentation.request.LoginRequest;
 import com.ssafy.tripon.member.presentation.response.LoginResponse;
-import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,14 +20,9 @@ public class MemberController {
 
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
-        Member member = memberService.authenticate(request.toCommand());
-
-        Token accessToken = jwtTokenProvider.createAccessToken(member);
-        Token refreshToken = jwtTokenProvider.createRefreshToken(member);
-
-        long ttlMillis = jwtTokenProvider.getRefreshExpirationMillis();
-        refreshTokenService.saveRefreshToken(member.getEmail(), refreshToken, Duration.ofMillis(ttlMillis));
-
-        return ResponseEntity.ok(new LoginResponse(accessToken.token(), refreshToken.token()));
+        TokenPair tokenPair = memberService.login(request.toCommand());
+        return ResponseEntity.ok(LoginResponse.from(tokenPair));
     }
+
+
 }

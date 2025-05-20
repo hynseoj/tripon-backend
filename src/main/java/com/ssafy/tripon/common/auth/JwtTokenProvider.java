@@ -23,7 +23,7 @@ public class JwtTokenProvider {
     @Value("${jwt.refreshToken.expirationMillis}")
     private long refreshTokenExpirationMillis;
 
-    public JwtTokenProvider(@Value("${secretKey}") String secretKey) {
+    public JwtTokenProvider(@Value("${jwt.secretKey}") String secretKey) {
         this.secretKey = Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
@@ -38,6 +38,20 @@ public class JwtTokenProvider {
                 .setSubject(member.getEmail())
                 .claim("role", member.getRole())
                 .setExpiration(accessTokenExpirationTime)
+                .signWith(secretKey)
+                .compact());
+    }
+
+    public Token createRefreshToken(Member member) {
+        Date now = new Date();
+        Date refreshTokenExpirationTime = new Date(now.getTime() + refreshTokenExpirationMillis);
+
+        String jti = UUID.randomUUID().toString();
+
+        return new Token(Jwts.builder()
+                .setId(jti)
+                .setSubject(member.getEmail())
+                .setExpiration(refreshTokenExpirationTime)
                 .signWith(secretKey)
                 .compact());
     }

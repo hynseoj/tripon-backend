@@ -15,8 +15,8 @@ public class Member {
     private String name;
     private String password;
     private Role role;
-    private String profileName;
-    private String profileUrl;
+    private String profileImageName;
+    private String profileImageUrl;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -27,12 +27,12 @@ public class Member {
         this.role = Role.USER;
     }
 
-    public Member(String email, String name, String password, String profileName, String profileUrl) {
+    public Member(String email, String name, String password, String profileImageName, String profileImageUrl) {
         this.email = email;
         this.name = name;
         this.password = password;
         this.role = Role.USER;
-        this.profileName = profileName;
-        this.profileUrl = profileUrl;
+        this.profileImageName = profileImageName;
+        this.profileImageUrl = profileImageUrl;
     }
 }

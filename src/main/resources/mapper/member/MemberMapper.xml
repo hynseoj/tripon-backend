@@ -23,5 +23,12 @@
         DELETE FROM members
         WHERE email = #{email}
     </delete>
+    
+    <select id="existsByEmail" parameterType="String" resultType="boolean">
+        SELECT
+            CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
+        FROM members
+        WHERE email = #{email}
+    </select>
 
 </mapper>

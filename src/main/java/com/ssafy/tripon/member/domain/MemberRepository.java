@@ -11,4 +11,5 @@ public interface MemberRepository {
     Member findByEmail(String email);
     int update(Member member);
     void deleteByEmail(String email);
+    boolean existsByEmail(String email);
 }

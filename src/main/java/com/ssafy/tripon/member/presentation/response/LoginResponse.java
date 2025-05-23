@@ -1,12 +1,12 @@
 package com.ssafy.tripon.member.presentation.response;
 
-import com.ssafy.tripon.common.auth.TokenPair;
+import com.ssafy.tripon.member.application.LoginServiceResponse;
 
 public record LoginResponse(
-        String accessToken,
-        String refreshToken
+        String name,
+        String accessToken
 ) {
-    public static LoginResponse from(TokenPair tokenPair) {
-        return new LoginResponse(tokenPair.accessToken().token(), tokenPair.refreshToken().token());
+    public static LoginResponse from(LoginServiceResponse response) {
+        return new LoginResponse(response.name(), response.tokenPair().accessToken().token());
     }
 }

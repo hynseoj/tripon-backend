@@ -27,6 +27,11 @@ public class AuthInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
+        // preflight 요청은 인증 없이 허용
+        if ("OPTIONS".equalsIgnoreCase(request.getMethod())) {
+            return true;
+        }
+
         String header = request.getHeader(AUTHORIZATION);
 
         if (header == null || !header.startsWith(AUTHENTICATION_TYPE)) {

@@ -38,7 +38,7 @@ public class MemberService {
 
     private final FileStorageService fileStorageService;
 
-    public TokenPair login(MemberLoginCommand command) {
+    public LoginServiceResponse login(MemberLoginCommand command) {
         Member foundMember = Optional.ofNullable(memberRepository.findByEmail(command.email()))
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
@@ -51,7 +51,7 @@ public class MemberService {
 
         refreshTokenService.saveRefreshToken(foundMember.getEmail(), refreshToken);
 
-        return new TokenPair(accessToken, refreshToken);
+        return LoginServiceResponse.of(foundMember, new TokenPair(accessToken, refreshToken));
     }
 
     public void logout(Member member, Token token) {
@@ -66,14 +66,20 @@ public class MemberService {
         refreshTokenService.deleteRefreshToken(member.getEmail());
     }
 
-    public TokenPair register(MemberRegisterCommand command, MultipartFile image) {
+    public LoginServiceResponse register(MemberRegisterCommand command, MultipartFile image) {
         if (memberRepository.existsByEmail(command.email())) {
             throw new CustomException(DUPLICATE_RESOURCE);
         }
 
-        String storedUrl = fileStorageService.upload(image);
+        Member member;
         String encodedPassword = passwordEncoder.encode(command.password());
-        Member member = command.toMember(encodedPassword, image.getOriginalFilename(), storedUrl);
+        if (image != null && !image.isEmpty()) {
+            String storedUrl = fileStorageService.upload(image);
+            member = command.toMember(encodedPassword, image.getOriginalFilename(), storedUrl);
+        }
+        else {
+            member = command.toMember(encodedPassword);
+        }
         memberRepository.save(member);
 
         Token accessToken = jwtTokenProvider.createAccessToken(member);
@@ -81,6 +87,6 @@ public class MemberService {
 
         refreshTokenService.saveRefreshToken(member.getEmail(), refreshToken);
 
-        return new TokenPair(accessToken, refreshToken);
+        return LoginServiceResponse.of(member, new TokenPair(accessToken, refreshToken));
     }
 }

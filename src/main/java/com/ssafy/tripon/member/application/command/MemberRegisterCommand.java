@@ -7,6 +7,10 @@ public record MemberRegisterCommand(
         String name,
         String password
 ) {
+    public Member toMember(String password) {
+        return new Member(email, name, password);
+    }
+
     public Member toMember(String password, String profileImageName, String profileImageUrl) {
         return new Member(email, name, password, profileImageName, profileImageUrl);
     }

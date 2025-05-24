@@ -58,7 +58,6 @@ CREATE TABLE IF NOT EXISTS `tripon`.`guguns` (
   `gugun_code` int NOT NULL comment '구군코드',
   `gugun_name` varchar(20) DEFAULT NULL comment '구군이름',
   PRIMARY KEY (`no`),
-  UNIQUE INDEX `sido_gugun_unique` (`sido_code`, `gugun_code`),
   INDEX `guguns_sido_to_sidos_code_fk_idx` (`sido_code` ASC) VISIBLE,
   INDEX `gugun_code_idx` (`gugun_code` ASC) VISIBLE,
   CONSTRAINT `guguns_sido_to_sidos_code_fk`
@@ -77,40 +76,28 @@ comment '구군정보테이블';
 -- -----------------------------------------------------
 DROP TABLE IF EXISTS `tripon`.`attractions` ;
 
-CREATE TABLE IF NOT EXISTS `tripon`.`attractions` (
-  `no` int NOT NULL AUTO_INCREMENT  comment '명소코드',
-  `content_id` int DEFAULT NULL comment '콘텐츠번호',
-  `title` varchar(500) DEFAULT NULL comment '명소이름',
-  `content_type_id` int DEFAULT NULL comment '콘텐츠타입',
-  `area_code` int DEFAULT NULL comment '시도코드',
-  `si_gun_gu_code` int DEFAULT NULL comment '구군코드',
-  `first_image1` varchar(100) DEFAULT NULL comment '이미지경로1',
-  `first_image2` varchar(100) DEFAULT NULL comment '이미지경로2',
-  `map_level` int DEFAULT NULL comment '줌레벨',
-  `latitude` decimal(20,17) DEFAULT NULL comment '위도',
-  `longitude` decimal(20,17) DEFAULT NULL comment '경도',
-  `tel` varchar(20) DEFAULT NULL comment '전화번호',
-  `addr1` varchar(100) DEFAULT NULL comment '주소1',
-  `addr2` varchar(100) DEFAULT NULL comment '주소2',
-  `homepage` varchar(1000) DEFAULT NULL comment '홈페이지',
-  `overview` varchar(10000) DEFAULT NULL comment '설명',
+CREATE TABLE `attractions` (
+  `no` int NOT NULL AUTO_INCREMENT,
+  `content_id` int DEFAULT NULL,
+  `title` varchar(500) DEFAULT NULL,
+  `content_type_id` int DEFAULT NULL,
+  `area_code` int DEFAULT NULL,
+  `si_gun_gu_code` int DEFAULT NULL,
+  `first_image1` varchar(100) DEFAULT NULL,
+  `first_image2` varchar(100) DEFAULT NULL,
+  `map_level` int DEFAULT NULL,
+  `latitude` decimal(20,17) DEFAULT NULL,
+  `longitude` decimal(20,17) DEFAULT NULL,
+  `tel` varchar(20) DEFAULT NULL,
+  `addr1` varchar(100) DEFAULT NULL,
+  `addr2` varchar(100) DEFAULT NULL,
+  `homepage` varchar(1000) DEFAULT NULL,
+  `overview` varchar(10000) DEFAULT NULL,
   PRIMARY KEY (`no`),
-  INDEX `attractions_typeid_to_types_typeid_fk_idx` (`content_type_id` ASC) VISIBLE,
-  INDEX `attractions_sido_to_sidos_code_fk_idx` (`area_code` ASC) VISIBLE,
-  INDEX `attractions_sigungu_to_guguns_gugun_fk_idx` (`si_gun_gu_code` ASC) VISIBLE,
-  CONSTRAINT `attractions_area_to_sidos_code_fk`
-    FOREIGN KEY (`area_code`)
-    REFERENCES `tripon`.`sidos` (`sido_code`),
-  CONSTRAINT `attractions_sigungu_to_guguns_gugun_fk`
-    FOREIGN KEY (`area_code`,`si_gun_gu_code`)
-    REFERENCES `tripon`.`guguns` (`sido_code`, `gugun_code`),
-  CONSTRAINT `attractions_typeid_to_types_typeid_fk`
-    FOREIGN KEY (`content_type_id`)
-    REFERENCES `tripon`.`contenttypes` (`content_type_id`))
-ENGINE = InnoDB
-AUTO_INCREMENT = 1
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci
+  KEY `attractions_typeid_to_types_typeid_fk_idx` (`content_type_id`),
+  KEY `attractions_si_gun_gu_to guguns_code_fk_idx` (`si_gun_gu_code`),
+  KEY `attractions_area_to_sidos_sido_fk_idx` (`area_code`)
+) ENGINE=InnoDB AUTO_INCREMENT=107559 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
 comment '명소정보테이블';
 
 
@@ -185,32 +172,27 @@ CREATE TABLE IF NOT EXISTS `tripon`.`comments` (
 -- -----------------------------------------------------
 -- Table `tripon`.`custom_attractions`
 -- -----------------------------------------------------
-DROP TABLE IF EXISTS `tripon`.`custom_attractions` ;
-
-CREATE TABLE IF NOT EXISTS `tripon`.`custom_attractions` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `title` VARCHAR(500) DEFAULT NULL,
-  `area_code` INT DEFAULT NULL,
-  `si_gun_gu_code` INT DEFAULT NULL,
-  `latitude` DECIMAL(20,17) DEFAULT NULL,
-  `longitude` DECIMAL(20,17) DEFAULT NULL,
-  `created_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `updated_at` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+DROP TABLE IF EXISTS `tripon`.`custom_attractions`;
+CREATE TABLE `tripon`.`custom_attractions` (
+  `id`               INT               NOT NULL AUTO_INCREMENT,
+  `title`            VARCHAR(500)      DEFAULT NULL,
+  `content_type_id`  INT               DEFAULT NULL,
+  `area_code`        INT               DEFAULT NULL,
+  `si_gun_gu_code`   INT               DEFAULT NULL,
+  `first_image1`     VARCHAR(100)      DEFAULT NULL,
+  `addr1`            VARCHAR(100)      DEFAULT NULL,
+  `latitude`         DECIMAL(20,17)    DEFAULT NULL,
+  `longitude`        DECIMAL(20,17)    DEFAULT NULL,
+  `created_at`       DATETIME          NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at`       DATETIME          NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
-  INDEX `area_code` (`area_code`),
-  INDEX `sigungu_code` (`si_gun_gu_code`),
-  CONSTRAINT `custom_attractions_ibfk_1`
-    FOREIGN KEY (`area_code`)
-    REFERENCES `tripon`.`sidos` (`sido_code`),
-  CONSTRAINT `custom_attractions_ibfk_2`
-    FOREIGN KEY (`area_code`, `si_gun_gu_code`)
-    REFERENCES `tripon`.`guguns` (`sido_code`, `gugun_code`)
-)
-ENGINE = InnoDB
-AUTO_INCREMENT = 500000
-DEFAULT CHARACTER SET = utf8mb4
-COLLATE = utf8mb4_0900_ai_ci;
-
+  KEY `custom_attractions_typeid_to_types_typeid_fk_idx` (`content_type_id`),
+  KEY `custom_attractions_si_gun_gu_to_guguns_code_fk_idx` (`si_gun_gu_code`),
+  KEY `custom_attractions_area_to_sidos_sido_fk_idx`  (`area_code`)
+) ENGINE=InnoDB
+  AUTO_INCREMENT=500000
+  DEFAULT CHARSET=utf8mb4
+  COLLATE=utf8mb4_0900_ai_ci;
 
 
 -- -----------------------------------------------------
@@ -418,27 +400,33 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- -----------------------------------------------------
 -- View
 -- -----------------------------------------------------
-CREATE VIEW unified_attractions_view AS
+CREATE VIEW `tripon`.`unified_attractions_view` AS
 SELECT
-    no AS id,
-    'attractions' AS source,
+    no             AS id,
+    'attractions'  AS source,
     title,
     area_code,
     si_gun_gu_code,
     latitude,
-    longitude
+    longitude,
+    first_image1,
+    addr1,
+    content_type_id
 FROM attractions
 
 UNION ALL
 
 SELECT
-    id,
-    'custom' AS source,
+    id             AS id,
+    'custom'       AS source,
     title,
     area_code,
     si_gun_gu_code,
     latitude,
-    longitude
+    longitude,
+    first_image1,
+    addr1,
+    content_type_id
 FROM custom_attractions;
 
 SET SQL_MODE=@OLD_SQL_MODE;
@@ -453,3 +441,4 @@ select * from plans;
 
 ALTER TABLE members
   MODIFY COLUMN password VARCHAR(255) NOT NULL;
+

@@ -4,11 +4,13 @@ import com.ssafy.tripon.attraction.application.command.AttractionFindCommand;
 import com.ssafy.tripon.attraction.application.command.AttractionSaveCommand;
 import com.ssafy.tripon.attraction.domain.Attraction;
 import com.ssafy.tripon.attraction.domain.AttractionRepository;
+import com.ssafy.tripon.attraction.domain.ContentType;
+import com.ssafy.tripon.attraction.domain.ContentTypeRepository;
 import com.ssafy.tripon.attraction.domain.CustomAttraction;
-import com.ssafy.tripon.common.exception.CustomException;
-import com.ssafy.tripon.common.exception.ErrorCode;
-
-import java.util.ArrayList;
+import com.ssafy.tripon.attraction.domain.Gugun;
+import com.ssafy.tripon.attraction.domain.GugunRepository;
+import com.ssafy.tripon.attraction.domain.Sido;
+import com.ssafy.tripon.attraction.domain.SidoRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,9 @@ import org.springframework.stereotype.Service;
 public class AttractionService {
 
 	private final AttractionRepository attractionRepository;
+	private final SidoRepository sidoRepository;
+	private final GugunRepository gugunRepository;
+	private final ContentTypeRepository contentTypeRepository;
 
 	// 관광지 생성
 	public Integer saveAttraction(AttractionSaveCommand command) {
@@ -34,17 +39,34 @@ public class AttractionService {
 	}
 
 	// 관광지 조회
-	public List<AttractionServiceResponse> findAllAttractions(AttractionFindCommand command) {
+	public AttractionCursorPage findAllAttractions(AttractionFindCommand command) {
 		// 각 테이블에서 엔티티 목록 조회
 		List<Attraction> attractions = attractionRepository.findAllAttraction(command);
 
-		// 예외 처리
-		if(attractions.isEmpty()) {
-			throw new CustomException(ErrorCode.ATTRACTIONS_NOT_FOUND);
+		boolean hasNext = attractions.size() > command.size() - 1;
+		Integer nextCursor = null;
+
+		if (hasNext) {
+			attractions.remove(attractions.size() - 1);
+			nextCursor = attractions.get(attractions.size() - 1).getNo();
 		}
-		
-		// 각각 toResponse()로 변환
-		return attractions.stream().map(AttractionServiceResponse::from).toList();
+
+		List<AttractionServiceResponse> content = attractions.stream().map(AttractionServiceResponse::from).toList();
+		return AttractionCursorPage.of(content, nextCursor);
 	}
 
+	public List<SidoResponse> findAllSidos() {
+		List<Sido> sidos = sidoRepository.findAllSidos();
+		return sidos.stream().map(SidoResponse::from).toList();
+	}
+
+	public List<GugunResponse> findAllGuguns(Integer sidoCode) {
+		List<Gugun> guguns = gugunRepository.findAllGuguns(sidoCode);
+		return guguns.stream().map(GugunResponse::from).toList();
+	}
+
+	public List<ContentTypeResponse> findAllContentTypes() {
+		List<ContentType> types = contentTypeRepository.findAllContentType();
+		return types.stream().map(ContentTypeResponse::from).toList();
+	}
 }

@@ -19,6 +19,7 @@ public class CustomAttraction extends Attraction {
 	private Double longitude;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
+	// @Todo: 이미지랑 주소 필드 추가 고려하기
 
 	public CustomAttraction(String title, Integer areaCode, Integer siGunguCode, Double latitude, Double longitude) {
 		this.title = title;

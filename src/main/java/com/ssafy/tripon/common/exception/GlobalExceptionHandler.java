@@ -1,9 +1,10 @@
 package com.ssafy.tripon.common.exception;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
-
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
@@ -17,9 +18,6 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.WebUtils;
 
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
-
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
@@ -27,7 +25,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(CustomException.class)
 	public ResponseEntity<ErrorResponse> handleCustomException(CustomException e, HttpServletRequest request) {
 		ErrorCode errorCode = e.getErrorCode();
-		log.error("custom 예외 발생: " + errorCode.getMessage());
+
+		log.info("잘못된 요청이 들어왔습니다.\n uri: {} {} \n 내용: {} ", request.getMethod(), request.getRequestURI(), e.getMessage());
+
+		requestLogging(request);
+
 		return ResponseEntity.status(errorCode.getStatus())
 				.body(new ErrorResponse(errorCode.getStatus(), errorCode.getMessage(), request.getRequestURI()));
 	}
@@ -36,7 +38,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	public ResponseEntity<ErrorResponse> handleAllExceptions(Exception e, HttpServletRequest request) {
 		ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR.value(), e.getMessage(),
 				request.getRequestURI());
-		log.error("알 수 없는 예외 발생 uri: {} {}, ", request.getMethod(), request.getRequestURI(), e);
+
+		log.error("알 수 없는 예외가 발생했습니다. \n uri: {} {} \n 내용: {}", request.getMethod(), request.getRequestURI(), e.getMessage());
+
+		requestLogging(request);
 		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
 	}
 
@@ -50,7 +55,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	protected ResponseEntity<Object> handleExceptionInternal(Exception e, Object body, HttpHeaders headers,
 			HttpStatusCode statusCode, WebRequest webRequest) {
 		HttpServletRequest request = ((ServletWebRequest) webRequest).getRequest();
-		log.error("spring 예외 발생 uri: {} {}, ", request.getMethod(), request.getRequestURI(), e);
+
+		log.error("서버 예외가 발생했습니다. \n uri: {} {} \n 내용: {}", request.getMethod(), request.getRequestURI(), e.getMessage());
+
 		requestLogging(request);
 		return ResponseEntity.status(statusCode)
 				.body(new ErrorResponse(statusCode.value(), e.getMessage(), request.getRequestURI()));

@@ -7,7 +7,7 @@
 	<select id="findAllAttraction"
 			parameterType="com.ssafy.tripon.attraction.application.command.AttractionFindCommand"
 			resultType="Attraction">
-		SELECT title, area_code AS areaCode, si_gun_gu_code AS siGunGuCode, latitude, longitude
+		SELECT id as no,title, area_code AS areaCode, si_gun_gu_code AS siGunGuCode, latitude, longitude
 		FROM unified_attractions_view
 		<where>
 			<if test="areaCode != null">

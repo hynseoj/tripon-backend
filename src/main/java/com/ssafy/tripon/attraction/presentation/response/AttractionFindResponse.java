@@ -3,6 +3,7 @@ package com.ssafy.tripon.attraction.presentation.response;
 import com.ssafy.tripon.attraction.application.AttractionServiceResponse;
 
 public record AttractionFindResponse(
+		
         String title,
         Integer areaCode,
         Integer siGunGuCode,

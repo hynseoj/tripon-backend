@@ -39,6 +39,7 @@ public class AttractionController {
 		AttractionFindCommand command = new AttractionFindCommand(areaCode, siGunGuCode, keyword);
 		AttractionFindAllResponse response = new AttractionFindAllResponse(
 				attractionService.findAllAttractions(command));
+		
 		return ResponseEntity.ok(response);
 	}
 

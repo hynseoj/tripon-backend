@@ -35,7 +35,7 @@ public class ReviewDetailController {
     public ResponseEntity<ReviewDetailSaveResponse> saveReviewDetail(
             @PathVariable(value = "reviewId") Integer reviewId,
             @Valid @RequestPart(value = "reviewDetail") ReviewDetailSaveRequest request,
-            @Valid @RequestPart(value = "images") List<MultipartFile> pictures
+            @Valid @RequestPart(value = "images", required = false) List<MultipartFile> pictures
     ) {
         ReviewDetailServiceResponse response = reviewDetailService.saveReviewDetail(
                 request.toCommand(reviewId), pictures);
@@ -54,7 +54,7 @@ public class ReviewDetailController {
             @PathVariable(value = "reviewId") Integer reviewId,
             @PathVariable(value = "reviewDetailId") Integer reviewDetailId,
             @Valid @RequestPart(value = "reviewDetail") ReviewDetailUpdateRequest request,
-            @Valid @RequestPart(value = "images") List<MultipartFile> pictures
+            @Valid @RequestPart(value = "images", required = false) List<MultipartFile> pictures
     ) {
         ReviewDetailServiceResponse response = reviewDetailService.updateReviewDetail(request.toCommand(reviewDetailId, reviewId), pictures);
         return ResponseEntity.ok(ReviewDetailUpdateResponse.from(response));

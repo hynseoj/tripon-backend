@@ -47,17 +47,21 @@ public class ReviewDetailService {
 
 		// reviewdetails-pictures
 		List<String> pictures = new ArrayList<>();
-		for (MultipartFile image : images) {
-			String storedUrl = fileStorageService.upload(image);
-			pictures.add(storedUrl);
-			reviewPictureRepository
-					.save(new ReviewPicture(reviewDetail.getId(), image.getOriginalFilename(), storedUrl));
+		if (images != null) {
+			for (MultipartFile image : images) {
+				String storedUrl = fileStorageService.upload(image);
+				pictures.add(storedUrl);
+				reviewPictureRepository
+						.save(new ReviewPicture(reviewDetail.getId(), image.getOriginalFilename(), storedUrl));
+			}
+
 		}
 
 		return ReviewDetailServiceResponse.from(reviewDetail, attractions, pictures);
 	}
 
 	public ReviewDetailServiceResponse findReviewDetail(Integer id) {
+
 		ReviewDetail reviewDetail = Optional.ofNullable(reviewDetailRepository.findById(id))
 				.orElseThrow(() -> new CustomException(ErrorCode.REVIEWDETAILS_NOT_FOUND));
 
@@ -81,6 +85,7 @@ public class ReviewDetailService {
 	public ReviewDetailServiceResponse updateReviewDetail(ReviewDetailUpdateCommand command,
 			List<MultipartFile> images) {
 		ReviewDetail reviewDetail = command.toReviewDetail();
+
 		int result = reviewDetailRepository.update(reviewDetail);
 
 		// 예외처리

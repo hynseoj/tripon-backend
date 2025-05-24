@@ -33,7 +33,7 @@ public class ReviewController {
     @PostMapping
     public ResponseEntity<Void> saveReview(@Valid @RequestBody ReviewSaveRequest request) {
         Integer id = reviewService.saveReview(request.toCommand("admin@ssafy.com")); // @Todo: 로그인 구현 후 수정
-        return ResponseEntity.created(URI.create("/api/v1/reviews" + id)).build();
+        return ResponseEntity.created(URI.create("/api/v1/reviews/" + id)).build();
     }
 
     @GetMapping

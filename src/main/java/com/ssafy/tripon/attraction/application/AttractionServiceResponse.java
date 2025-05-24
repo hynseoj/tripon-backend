@@ -4,6 +4,7 @@ import com.ssafy.tripon.attraction.domain.Attraction;
 import com.ssafy.tripon.attraction.domain.CustomAttraction;
 
 public record AttractionServiceResponse(
+		Integer id,
 		String title, 
 		Integer areaCode, 
 		Integer siGunGuCode, 
@@ -14,10 +15,10 @@ public record AttractionServiceResponse(
 
 	public static AttractionServiceResponse from(Attraction a) {
 		if (a instanceof CustomAttraction) {
-			return new AttractionServiceResponse(a.getTitle(), a.getAreaCode(), a.getSiGunGuCode(), a.getLatitude(),
+			return new AttractionServiceResponse(a.getNo(), a.getTitle(), a.getAreaCode(), a.getSiGunGuCode(), a.getLatitude(),
 					a.getLongitude(), true);
 		}
-		return new AttractionServiceResponse(a.getTitle(), a.getAreaCode(), a.getSiGunGuCode(), a.getLatitude(),
+		return new AttractionServiceResponse(a.getNo(), a.getTitle(), a.getAreaCode(), a.getSiGunGuCode(), a.getLatitude(),
 				a.getLongitude(), false);
 	}
 }

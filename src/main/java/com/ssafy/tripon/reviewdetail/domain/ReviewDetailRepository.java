@@ -12,6 +12,8 @@ public interface ReviewDetailRepository {
     ReviewDetail findById(Integer id);
     int update(ReviewDetail reviewDetail);
     void deleteById(Integer id);
+    void deleteAllByReviewId(Integer reviewId);
 
 	List<ReviewDetail> findByReviewId(Integer reviewId);
+	
 }

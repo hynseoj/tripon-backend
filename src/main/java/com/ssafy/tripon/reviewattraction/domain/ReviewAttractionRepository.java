@@ -8,5 +8,5 @@ public interface ReviewAttractionRepository {
 
     void save(ReviewAttraction reviewAttraction);
     List<ReviewAttraction> findAllByReviewDetailId(Integer reviewDetailId);
-    void deleteAllByReviewDetailId(Integer reviewDetailId);
+    int deleteAllByReviewDetailId(Integer reviewDetailId);
 }

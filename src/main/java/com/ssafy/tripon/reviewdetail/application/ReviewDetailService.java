@@ -132,7 +132,7 @@ public class ReviewDetailService {
 			fileStorageService.delete(reviewPicture.getUrl());
 		}
 
-		reviewAttractionRepository.deleteAllByReviewDetailId(id);
+		System.out.println(reviewAttractionRepository.deleteAllByReviewDetailId(id));
 		reviewPictureRepository.deleteAllByReviewDetailId(id);
 		reviewDetailRepository.deleteById(id);
 	}

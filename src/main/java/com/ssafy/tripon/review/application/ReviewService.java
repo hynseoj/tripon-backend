@@ -9,6 +9,7 @@ import com.ssafy.tripon.review.application.command.ReviewSaveCommand;
 import com.ssafy.tripon.review.application.command.ReviewUpdateCommand;
 import com.ssafy.tripon.review.domain.Review;
 import com.ssafy.tripon.review.domain.ReviewRepository;
+import com.ssafy.tripon.reviewattraction.domain.ReviewAttractionRepository;
 import com.ssafy.tripon.reviewdetail.domain.ReviewDetailRepository;
 import java.util.List;
 import java.util.Optional;
@@ -27,7 +28,8 @@ public class ReviewService {
 	private final ReviewDetailRepository reviewDetailRepository;
 	private final MemberRepository memberRepository;
 	private final CommentRepository commentRepository;
-	
+	private final ReviewAttractionRepository reviewAttractionRepository;
+
 	public Integer saveReview(ReviewSaveCommand command) {
 		Review review = command.toReview();
 		reviewRepository.save(review);
@@ -57,7 +59,7 @@ public class ReviewService {
 	public ReviewServiceResponse updateReview(ReviewUpdateCommand command) {
 		Review review = command.toReview();
 		int result = reviewRepository.update(review);
-		
+
 		// 예외처리
 		if (result == 0) {
 			throw new CustomException(ErrorCode.REVIEWS_NOT_FOUND);
@@ -67,9 +69,17 @@ public class ReviewService {
 	}
 
 	public void deleteReview(Integer id) {
+		List<Integer> detailIds = reviewDetailRepository.findAllIdByReviewId(id);
+
+		// 일차별 후기 관광지 삭제
+		for (Integer detailId : detailIds) {
+	        reviewAttractionRepository.deleteAllByReviewDetailId(detailId);
+	    }
+		// 일차별 후기 삭제
+		reviewDetailRepository.deleteAllByReviewId(id);
 		// 댓글 먼저 삭제
 		commentRepository.deleteAllByReviewId(id);
-		
+
 		int result = reviewRepository.deleteById(id);
 
 		// 예외처리

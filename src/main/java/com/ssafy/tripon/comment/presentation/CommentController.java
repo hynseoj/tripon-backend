@@ -33,7 +33,7 @@ public class CommentController {
 
 	@PostMapping
 	public ResponseEntity<Void> saveComment(@PathVariable(value = "reviewId") Integer reviewId,
-			CommentSaveRequest request, @LoginMember Member member) {
+			@RequestBody @Valid CommentSaveRequest request, @LoginMember Member member) {
 		commentService.saveComment(request.toCommand(member.getEmail(), reviewId));
 		return ResponseEntity.created(URI.create("/api/v1/reviews/" + reviewId + "/comments")).build();
 	}

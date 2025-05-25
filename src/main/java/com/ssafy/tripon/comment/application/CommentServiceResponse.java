@@ -7,14 +7,15 @@ import com.ssafy.tripon.comment.domain.Comment;
 public record CommentServiceResponse(
 		Integer id,
 		Integer parentId,
-		String memberId,
+		String memberEmail,
+		String memberName,
 		String content,
 		LocalDateTime createdAt,
 		LocalDateTime updatedAt
 		) {
-	public static CommentServiceResponse from(Comment comment) {
+	public static CommentServiceResponse from(Comment comment, String memberName) {
 		return new CommentServiceResponse(comment.getId(), comment.getParentId(), 
-				comment.getMemberId(),comment.getContent(), comment.getCreatedAt(), 
+				comment.getMemberId(), memberName,comment.getContent(), comment.getCreatedAt(), 
 				comment.getUpdatedAt());
 	}
 }

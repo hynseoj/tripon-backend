@@ -8,13 +8,14 @@ public record CommentFindResponse(
 		Integer id,
 		String content,
 		Integer parentId,
-		String memberId,
+		String memberEmail,
+		String memberName,
 		LocalDateTime createdAt,
         LocalDateTime updatedAt
 		) {
 	public static CommentFindResponse from(CommentServiceResponse response) {
 		return new CommentFindResponse(response.id(), response.content(),
-				response.parentId(), response.memberId(),response.createdAt(),
+				response.parentId(), response.memberEmail(), response.memberName(), response.createdAt(),
 				response.updatedAt()
 				);
 	}

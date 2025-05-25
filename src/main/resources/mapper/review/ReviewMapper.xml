@@ -2,35 +2,55 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ssafy.tripon.review.domain.ReviewRepository">
+<mapper
+	namespace="com.ssafy.tripon.review.domain.ReviewRepository">
 
-    <insert id="save" parameterType="Review" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO reviews (member_email, title)
-        VALUES (#{memberEmail}, #{title})
-    </insert>
+	<insert id="save" parameterType="Review" useGeneratedKeys="true"
+		keyProperty="id">
+		INSERT INTO reviews (member_email, title)
+		VALUES (#{memberEmail}, #{title})
+	</insert>
 
-    <select id="findAll" resultType="Review">
-        SELECT id, member_email as memberEmail, title, created_at as createdAt, updated_at as updatedAt
-        FROM reviews
-        ORDER BY created_at desc
-    </select>
+	<select id="findAll" resultType="Review">
+		SELECT id, member_email as memberEmail, title, created_at as createdAt,
+		updated_at as updatedAt
+		FROM reviews
+		ORDER BY created_at desc
+	</select>
 
-    <select id="findById" parameterType="Integer" resultType="Review">
-        SELECT id, member_email as memberEmail, title, created_at as createdAt, updated_at as updatedAt
-        FROM reviews
-        WHERE id = #{id}
-    </select>
+	<select id="findById" parameterType="Integer"
+		resultType="Review">
+		SELECT id, member_email as memberEmail, title, created_at as createdAt,
+		updated_at as updatedAt
+		FROM reviews
+		WHERE id = #{id}
+	</select>
 
-    <update id="update" parameterType="Review">
-        UPDATE reviews
-        SET title = #{title},
-            updated_at = NOW()
-        WHERE id = #{id}
-    </update>
-    
-    <delete id="deleteById" parameterType="Integer">
-        DELETE FROM reviews
-        WHERE id = #{id}
-    </delete>
+	<update id="update" parameterType="Review">
+		UPDATE reviews
+		SET title = #{title},
+		updated_at = NOW()
+		WHERE id = #{id}
+	</update>
+
+	<delete id="deleteById" parameterType="Integer">
+		DELETE FROM reviews
+		WHERE id = #{id}
+	</delete>
+
+	<select id="findTop4ByLikeInLastMonth" resultType="Review">
+		SELECT r.*
+		FROM reviews r
+		JOIN (
+		SELECT review_id, COUNT(*) AS like_count
+		FROM liked_reviews
+		WHERE created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
+		GROUP BY review_id
+		ORDER BY like_count DESC
+		LIMIT 4
+		) AS top_liked
+		ON r.id = top_liked.review_id
+		ORDER BY top_liked.like_count DESC
+	</select>
 
 </mapper>

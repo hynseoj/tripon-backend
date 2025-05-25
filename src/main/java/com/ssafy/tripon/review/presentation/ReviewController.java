@@ -6,6 +6,7 @@ import com.ssafy.tripon.review.application.ReviewService;
 import com.ssafy.tripon.review.application.ReviewServiceResponse;
 import com.ssafy.tripon.review.presentation.request.ReviewSaveRequest;
 import com.ssafy.tripon.review.presentation.request.ReviewUpdateRequest;
+import com.ssafy.tripon.review.presentation.response.PopularReviewResponse;
 import com.ssafy.tripon.review.presentation.response.ReviewFindAllResponse;
 import com.ssafy.tripon.review.presentation.response.ReviewFindResponse;
 import com.ssafy.tripon.review.presentation.response.ReviewUpdateResponse;
@@ -64,4 +65,11 @@ public class ReviewController {
 		reviewService.deleteReview(id);
 		return ResponseEntity.noContent().build();
 	}
+	
+	@GetMapping("/popular")
+	public ResponseEntity<List<PopularReviewResponse>> findPopularReview() {
+	    List<PopularReviewResponse> result = reviewService.findPopularReview();
+	    return ResponseEntity.ok(result);
+	}
+
 }

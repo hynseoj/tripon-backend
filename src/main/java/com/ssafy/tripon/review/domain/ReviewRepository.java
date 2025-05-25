@@ -11,4 +11,5 @@ public interface ReviewRepository {
     Review findById(Integer id);
     int update(Review review);
     int deleteById(Integer id);
+    List<Review> findTop4ByLikeInLastMonth();
 }

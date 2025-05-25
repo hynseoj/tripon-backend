@@ -2,22 +2,34 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.ssafy.tripon.reviewpicture.domain.ReviewPictureRepository">
+<mapper
+	namespace="com.ssafy.tripon.reviewpicture.domain.ReviewPictureRepository">
 
-    <insert id="save" parameterType="ReviewPicture" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO pictures (reviewdetail_id, picture_original, picture_modify)
-        VALUES (#{reviewDetailId}, #{originalName}, #{url})
-    </insert>
+	<insert id="save" parameterType="ReviewPicture"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO pictures (reviewdetail_id, picture_original, picture_modify)
+		VALUES (#{reviewDetailId}, #{originalName}, #{url})
+	</insert>
 
-    <select id="findAllByReviewDetailId" parameterType="Integer" resultType="ReviewPicture">
-        SELECT id, reviewdetail_id as reviewDetailId, picture_original as originalName, picture_modify as url, created_at as createdAt, updated_at as updatedAt
-        FROM pictures
-        WHERE reviewdetail_id = #{reviewDetailId}
-    </select>
-    
-    <delete id="deleteAllByReviewDetailId" parameterType="Integer">
-        DELETE FROM pictures
-        WHERE reviewdetail_id = #{reviewDetailId}
-    </delete>
+	<select id="findAllByReviewDetailId" parameterType="Integer"
+		resultType="ReviewPicture">
+		SELECT id, reviewdetail_id as reviewDetailId, picture_original as
+		originalName, picture_modify as url, created_at as createdAt,
+		updated_at as updatedAt
+		FROM pictures
+		WHERE reviewdetail_id = #{reviewDetailId}
+	</select>
+
+	<delete id="deleteAllByReviewDetailId" parameterType="Integer">
+		DELETE FROM pictures
+		WHERE reviewdetail_id = #{reviewDetailId}
+	</delete>
+	
+	<select id="findFirstUrlByReviewDetailId" resultType="string">
+		SELECT picture_modify as url
+		FROM pictures
+		WHERE reviewdetail_id = #{reviewDetailId}
+		LIMIT 1
+	</select>
 
 </mapper>

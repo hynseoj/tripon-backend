@@ -9,4 +9,6 @@ public interface ReviewPictureRepository {
     void save(ReviewPicture reviewPicture);
     List<ReviewPicture> findAllByReviewDetailId(Integer reviewDetailId);
     void deleteAllByReviewDetailId(Integer reviewDetailId);
+    String findFirstUrlByReviewDetailId(Integer detailId);
+
 }

@@ -62,8 +62,21 @@
 	</delete>
 
 	<delete id="deleteAllByReviewId" parameterType="Integer">
-		DELETE FROM reviewdetails
+		DELETE FROM
+		reviewdetails
 		WHERE review_id = #{reviewId}
 	</delete>
+
+	<select id="findIdByReviewIdAndDay" resultType="Integer">
+		SELECT id
+		FROM
+		reviewdetails
+		WHERE review_id = #{reviewId} AND day = #{day}
+	</select>
+	<select id="findContentById" resultType="string">
+		SELECT content
+		FROM reviewdetails
+		WHERE id = #{reviewDetailId}
+	</select>
 
 </mapper>

@@ -1,5 +1,11 @@
 package com.ssafy.tripon.review.application;
 
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.ssafy.tripon.comment.domain.CommentRepository;
 import com.ssafy.tripon.common.exception.CustomException;
 import com.ssafy.tripon.common.exception.ErrorCode;
@@ -9,14 +15,12 @@ import com.ssafy.tripon.review.application.command.ReviewSaveCommand;
 import com.ssafy.tripon.review.application.command.ReviewUpdateCommand;
 import com.ssafy.tripon.review.domain.Review;
 import com.ssafy.tripon.review.domain.ReviewRepository;
+import com.ssafy.tripon.review.presentation.response.PopularReviewResponse;
 import com.ssafy.tripon.reviewattraction.domain.ReviewAttractionRepository;
 import com.ssafy.tripon.reviewdetail.domain.ReviewDetailRepository;
-import java.util.List;
-import java.util.Optional;
+import com.ssafy.tripon.reviewpicture.domain.ReviewPictureRepository;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +33,7 @@ public class ReviewService {
 	private final MemberRepository memberRepository;
 	private final CommentRepository commentRepository;
 	private final ReviewAttractionRepository reviewAttractionRepository;
+	private final ReviewPictureRepository reviewPictureRepository;
 
 	public Integer saveReview(ReviewSaveCommand command) {
 		Review review = command.toReview();
@@ -73,8 +78,8 @@ public class ReviewService {
 
 		// 일차별 후기 관광지 삭제
 		for (Integer detailId : detailIds) {
-	        reviewAttractionRepository.deleteAllByReviewDetailId(detailId);
-	    }
+			reviewAttractionRepository.deleteAllByReviewDetailId(detailId);
+		}
 		// 일차별 후기 삭제
 		reviewDetailRepository.deleteAllByReviewId(id);
 		// 댓글 먼저 삭제
@@ -87,4 +92,23 @@ public class ReviewService {
 			throw new CustomException(ErrorCode.REVIEWS_NOT_FOUND);
 		}
 	}
+
+	public List<PopularReviewResponse> findPopularReview() {
+	    List<Review> topReviews = reviewRepository.findTop4ByLikeInLastMonth();
+
+	    return topReviews.stream().map(review -> {
+	        Integer reviewDetailId = reviewDetailRepository.findIdByReviewIdAndDay(review.getId(), 1);
+	        String content = reviewDetailRepository.findContentById(reviewDetailId);
+	        String imageUrl = reviewPictureRepository.findFirstUrlByReviewDetailId(reviewDetailId);
+
+	        return new PopularReviewResponse(
+	            review.getId(),
+	            review.getTitle(),
+	            content,
+	            imageUrl
+	        );
+	    }).toList();
+	}
+
+
 }

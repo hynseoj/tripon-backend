@@ -37,4 +37,12 @@ public class Attraction {
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}
+	
+	public Attraction(String title, Integer areaCode, Integer siGunguCode, Double latitude, Double longitude) {
+		this.title = title;
+		this.areaCode = areaCode;
+		this.siGunGuCode = siGunguCode;
+		this.latitude = latitude;
+		this.longitude = longitude;
+	}
 }

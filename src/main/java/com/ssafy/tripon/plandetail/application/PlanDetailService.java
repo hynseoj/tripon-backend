@@ -1,10 +1,5 @@
 package com.ssafy.tripon.plandetail.application;
 
-import java.util.Optional;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.ssafy.tripon.attraction.application.AttractionService;
 import com.ssafy.tripon.attraction.application.command.AttractionSaveCommand;
 import com.ssafy.tripon.common.exception.CustomException;
@@ -15,8 +10,10 @@ import com.ssafy.tripon.plandetail.domain.PlanAttraction;
 import com.ssafy.tripon.plandetail.domain.PlanAttractionRepository;
 import com.ssafy.tripon.plandetail.domain.PlanDetail;
 import com.ssafy.tripon.plandetail.domain.PlanDetailRepository;
-
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,9 +29,8 @@ public class PlanDetailService {
 		PlanDetail planDetail = command.toPlanDetail();
 		planDetailRepository.savePlanDetail(planDetail);
 		Integer planDetailId = planDetail.getId();
-		for (AttractionSaveCommand attractionCommand : command.attractions()) {
-			// 없으면 생성
-			Integer attractionId = attractionService.saveAttraction(attractionCommand);
+
+		for (Integer attractionId : command.attractions()) {
 			planAttractionRepository.savePlanAttraction(new PlanAttraction(planDetailId, attractionId));
 		}
 

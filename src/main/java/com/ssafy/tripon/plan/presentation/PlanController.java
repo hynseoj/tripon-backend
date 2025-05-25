@@ -1,9 +1,17 @@
 package com.ssafy.tripon.plan.presentation;
 
+import com.ssafy.tripon.common.auth.config.LoginMember;
+import com.ssafy.tripon.member.domain.Member;
+import com.ssafy.tripon.plan.application.PlanService;
+import com.ssafy.tripon.plan.application.PlanServiceResponse;
+import com.ssafy.tripon.plan.application.command.PlanUpdateCommand;
+import com.ssafy.tripon.plan.presentation.request.PlanSaveRequest;
+import com.ssafy.tripon.plan.presentation.request.PlanUpdateRequest;
+import com.ssafy.tripon.plan.presentation.response.PlanFindAllByMemberIdResponse;
+import jakarta.validation.Valid;
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
-
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,36 +22,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ssafy.tripon.plan.application.PlanService;
-import com.ssafy.tripon.plan.application.PlanServiceResponse;
-import com.ssafy.tripon.plan.application.command.PlanUpdateCommand;
-import com.ssafy.tripon.plan.presentation.request.PlanSaveRequest;
-import com.ssafy.tripon.plan.presentation.request.PlanUpdateRequest;
-import com.ssafy.tripon.plan.presentation.response.PlanFindAllByMemberIdResponse;
-
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
-
 @RestController
 @RequestMapping("/api/v1/plans")
 @RequiredArgsConstructor
 public class PlanController {
 
 	private final PlanService planService;
-	// member 정보 임의 설정
-	private String memberId = "admin@ssafy.com";
 	
 	// 계획 생성
 	@PostMapping
-	public ResponseEntity<Void> savePlan(@Valid @RequestBody PlanSaveRequest request) {
-		Integer id = planService.savePlan(request.toCommand(memberId));
-		return  ResponseEntity.created(URI.create("/api/v1/plans" + id)).build();
+	public ResponseEntity<Void> savePlan(@LoginMember Member member, @Valid @RequestBody PlanSaveRequest request) {
+		Integer id = planService.savePlan(request.toCommand(member.getEmail()));
+		return  ResponseEntity.created(URI.create("/api/v1/plans/" + id))
+				.header("Access-Control-Expose-Headers", "Location")
+				.build();
 	}
 
 	// 계획 전체 조회
 	@GetMapping
-	public ResponseEntity<PlanFindAllByMemberIdResponse> findAllPlanByMemberId() {
-		List<PlanServiceResponse> serviceList = planService.findAllPlanByMemberId(memberId);
+	public ResponseEntity<PlanFindAllByMemberIdResponse> findAllPlanByMemberId(@LoginMember Member member) {
+		List<PlanServiceResponse> serviceList = planService.findAllPlanByMemberId(member.getEmail());
 
 		PlanFindAllByMemberIdResponse response = new PlanFindAllByMemberIdResponse(serviceList);
 		return ResponseEntity.ok(response);

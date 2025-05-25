@@ -4,7 +4,7 @@
 
 <mapper namespace="com.ssafy.tripon.plandetail.domain.PlanAttractionRepository">
 	
-	<insert id="savePlanAttraction">
+	<insert id="savePlanAttraction" parameterType="PlanAttraction">
 		insert into plan_attractions (plandetail_id, attraction_id)
 		value(#{planDetailId}, #{attractionId})
 	</insert>

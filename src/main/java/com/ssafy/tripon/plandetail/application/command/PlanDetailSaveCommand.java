@@ -1,14 +1,12 @@
 package com.ssafy.tripon.plandetail.application.command;
 
-import java.util.List;
-
-import com.ssafy.tripon.attraction.application.command.AttractionSaveCommand;
 import com.ssafy.tripon.plandetail.domain.PlanDetail;
+import java.util.List;
 
 public record PlanDetailSaveCommand(
 		Integer planId,
 		Integer day,
-		List<AttractionSaveCommand> attractions
+		List<Integer> attractions
 		) {
 
 	public PlanDetail toPlanDetail() {

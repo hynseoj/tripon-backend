@@ -40,12 +40,9 @@ public class AuthInterceptor implements HandlerInterceptor {
 
         Token token = new Token(header.substring(BEARER_PREFIX_LENGTH));
 
+        jwtTokenProvider.validateToken(token);
         if (blacklistService.isBlacklisted(jwtTokenProvider.getJti(token))) {
             throw new CustomException(FORBIDDEN);
-        }
-
-        if (!jwtTokenProvider.validateToken(token)) {
-            throw new CustomException(UNAUTHORIZED);
         }
 
         request.setAttribute("memberEmail", jwtTokenProvider.getMemberEmail(token));

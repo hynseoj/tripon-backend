@@ -1,17 +1,19 @@
 package com.ssafy.tripon.common.auth;
 
 import static com.ssafy.tripon.common.exception.ErrorCode.ACCESS_TOKEN_EXPIRED;
+import static com.ssafy.tripon.common.exception.ErrorCode.UNAUTHORIZED;
 
 import com.ssafy.tripon.common.exception.CustomException;
 import com.ssafy.tripon.member.domain.Member;
-import java.util.Date;
-import java.util.UUID;
-import javax.crypto.SecretKey;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import java.util.Date;
+import java.util.UUID;
+import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -81,17 +83,13 @@ public class JwtTokenProvider {
                 .getSubject();
     }
 
-    public boolean validateToken(Token token) {
+    public void validateToken(Token token) {
         try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token.token());
-
-            if (claims.getBody().getExpiration().before(new Date())) {
-                throw new CustomException(ACCESS_TOKEN_EXPIRED);
-            }
-
-            return true;
+            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token.token());
+        } catch (ExpiredJwtException e) {
+            throw new CustomException(ACCESS_TOKEN_EXPIRED);
         } catch (JwtException | IllegalArgumentException e) {
-            return false;
+            throw new CustomException(UNAUTHORIZED);
         }
     }
 }

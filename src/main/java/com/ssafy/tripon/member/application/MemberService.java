@@ -89,4 +89,24 @@ public class MemberService {
 
         return LoginServiceResponse.of(member, new TokenPair(accessToken, refreshToken));
     }
+
+    public LoginServiceResponse refreshToken(Token refreshToken) {
+        jwtTokenProvider.validateToken(refreshToken);
+        String memberEmail = jwtTokenProvider.getMemberEmail(refreshToken);
+        Token storedRefreshToken = refreshTokenService.getRefreshToken(memberEmail);
+
+        if (storedRefreshToken.token() == null || !storedRefreshToken.token().equals(refreshToken.token())) {
+            throw new CustomException(UNAUTHORIZED);
+        }
+
+        Member foundMember = Optional.ofNullable(memberRepository.findByEmail(memberEmail))
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+
+        Token newAccessToken = jwtTokenProvider.createAccessToken(foundMember);
+        Token newRefreshToken = jwtTokenProvider.createRefreshToken(foundMember);
+
+        refreshTokenService.saveRefreshToken(memberEmail, newRefreshToken);
+
+        return LoginServiceResponse.of(foundMember, new TokenPair(newAccessToken, newRefreshToken));
+    }
 }

@@ -7,9 +7,11 @@
 
 	<insert id="save" parameterType="Member" useGeneratedKeys="true"
 		keyProperty="id">
-		INSERT INTO members (email, name, password, role, profile_picture_original,
+		INSERT INTO members (email, name, password, role,
+		profile_picture_original,
 		profile_picture_modify)
-		VALUES (#{email}, #{name}, #{password}, #{role}, #{profileImageName},
+		VALUES (#{email},
+		#{name}, #{password}, #{role}, #{profileImageName},
 		#{profileImageUrl})
 	</insert>
 
@@ -17,12 +19,26 @@
 		resultType="Member">
 		SELECT email, name, password, role,
 		profile_picture_original AS profileImageName,
-		profile_picture_modify AS profileImageUrl,
+		profile_picture_modify AS
+		profileImageUrl,
 		created_at AS createdAt,
 		updated_at AS updatedAt
-		FROM members
+		FROM
+		members
 		WHERE email = #{email}
 	</select>
+
+	<update id="update" parameterType="Member">
+		update members
+		set
+		name = #{name},
+		profile_picture_original = #{profileImageName},
+		profile_picture_modify = #{profileImageUrl}
+		<if test="password != null and password != ''">
+			, password = #{password}
+		</if>
+	</update>
+
 
 	<delete id="deleteByEmail" parameterType="String">
 		DELETE FROM members
@@ -33,7 +49,8 @@
 		resultType="boolean">
 		SELECT
 		CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
-		FROM members
+		FROM
+		members
 		WHERE email = #{email}
 	</select>
 

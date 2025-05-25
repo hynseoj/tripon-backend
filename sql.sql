@@ -453,3 +453,5 @@ select * from plans;
 
 ALTER TABLE members
   MODIFY COLUMN password VARCHAR(255) NOT NULL;
+  
+ALTER TABLE comments MODIFY parent_id INT NULL;

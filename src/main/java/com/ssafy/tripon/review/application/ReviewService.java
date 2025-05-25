@@ -1,5 +1,6 @@
 package com.ssafy.tripon.review.application;
 
+import com.ssafy.tripon.comment.domain.CommentRepository;
 import com.ssafy.tripon.common.exception.CustomException;
 import com.ssafy.tripon.common.exception.ErrorCode;
 import com.ssafy.tripon.like.domain.LikeRepository;
@@ -25,7 +26,8 @@ public class ReviewService {
 	private final LikeRepository likeRepository;
 	private final ReviewDetailRepository reviewDetailRepository;
 	private final MemberRepository memberRepository;
-
+	private final CommentRepository commentRepository;
+	
 	public Integer saveReview(ReviewSaveCommand command) {
 		Review review = command.toReview();
 		reviewRepository.save(review);
@@ -65,6 +67,9 @@ public class ReviewService {
 	}
 
 	public void deleteReview(Integer id) {
+		// 댓글 먼저 삭제
+		commentRepository.deleteAllByReviewId(id);
+		
 		int result = reviewRepository.deleteById(id);
 
 		// 예외처리

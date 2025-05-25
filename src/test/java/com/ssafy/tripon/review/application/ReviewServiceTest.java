@@ -48,7 +48,7 @@ class ReviewServiceTest {
         reviewService.saveReview(new ReviewSaveCommand("admin@ssafy.com", "두 번째 리뷰입니다."));
 
         // when
-        List<ReviewServiceResponse> reviews = reviewService.findAllReviews();
+        List<ReviewServiceResponse> reviews = reviewService.findAllReviews("admin@ssafy.com");
 
         // then
         assertThat(reviews).hasSizeGreaterThanOrEqualTo(2);
@@ -62,7 +62,7 @@ class ReviewServiceTest {
         reviewDetailRepository.save(new ReviewDetail(savedId, 2, "둘 째날"));
 
         // when
-        ReviewServiceResponse response = reviewService.findReview(savedId);
+        ReviewServiceResponse response = reviewService.findReview(savedId, "admin@ssafy.com");
 
         // then
         assertThat(response.title()).isEqualTo("첫 리뷰입니다.");
@@ -92,7 +92,7 @@ class ReviewServiceTest {
         reviewService.deleteReview(savedId);
 
         // then
-        List<ReviewServiceResponse> reviews = reviewService.findAllReviews();
+        List<ReviewServiceResponse> reviews = reviewService.findAllReviews("admin@ssafy.com");
         assertThat(reviews.stream().anyMatch(r -> r.id().equals(savedId))).isFalse();
     }
 }

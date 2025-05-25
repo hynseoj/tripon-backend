@@ -8,6 +8,6 @@ public record ReviewUpdateCommand(
         String title
 ) {
     public Review toReview() {
-        return new Review(email, title);
+        return new Review(id, email, title);
     }
 }

@@ -8,5 +8,6 @@ public interface LikeRepository {
 
     void save(Like like);
     Integer getCountByReviewId(Integer reviewId);
+    boolean existsByReviewIdAndEmail(Integer reviewId, String email);
     int delete(@Param("reviewId") Integer reviewId, @Param("email") String email);
 }

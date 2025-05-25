@@ -49,7 +49,7 @@
 	</insert>
 
 	<select id="findAttractionById" parameterType="Integer" resultType="Attraction">
-		SELECT id, title, area_code as areaCode, si_gun_gu_code as siGunGuCode, latitude, longitude
+		SELECT id as no, title, area_code as areaCode, si_gun_gu_code as siGunGuCode, latitude, longitude
 		FROM unified_attractions_view
 		WHERE id = #{id}
 	</select>

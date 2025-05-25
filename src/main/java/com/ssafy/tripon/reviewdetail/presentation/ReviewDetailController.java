@@ -4,6 +4,7 @@ import com.ssafy.tripon.reviewdetail.application.ReviewDetailService;
 import com.ssafy.tripon.reviewdetail.application.ReviewDetailServiceResponse;
 import com.ssafy.tripon.reviewdetail.presentation.request.ReviewDetailSaveRequest;
 import com.ssafy.tripon.reviewdetail.presentation.request.ReviewDetailUpdateRequest;
+import com.ssafy.tripon.reviewdetail.presentation.response.ReviewDetailFindByReviewIdResponse;
 import com.ssafy.tripon.reviewdetail.presentation.response.ReviewDetailFindResponse;
 import com.ssafy.tripon.reviewdetail.presentation.response.ReviewDetailSaveResponse;
 import com.ssafy.tripon.reviewdetail.presentation.response.ReviewDetailUpdateResponse;
@@ -48,6 +49,17 @@ public class ReviewDetailController {
         ReviewDetailServiceResponse response = reviewDetailService.findReviewDetail(reviewDetailId);
         return ResponseEntity.ok(ReviewDetailFindResponse.from(response));
     }
+    
+//    @GetMapping("/{reviewId}")
+//    public ResponseEntity<List<ReviewDetailFindResponse>> findReviewDetailsByReviewId(@PathVariable("reviewId") Integer reviewId) {
+//        List<ReviewDetailServiceResponse> responseList = reviewDetailService.findReviewDetailByReviewId(reviewId);
+//        
+//        List<ReviewDetailFindResponse> result = responseList.stream()
+//                .map(ReviewDetailFindResponse::from)
+//                .toList();
+//
+//        return ResponseEntity.ok(result);
+//    }
 
     @PutMapping("/{reviewDetailId}")
     public ResponseEntity<ReviewDetailUpdateResponse> updateReviewDetail(

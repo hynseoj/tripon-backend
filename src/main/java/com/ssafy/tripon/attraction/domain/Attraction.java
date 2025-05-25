@@ -4,10 +4,12 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@ToString
 public class Attraction {
 	
 	private Integer no;
@@ -27,7 +29,8 @@ public class Attraction {
 	private String homepage;
 	private String overview;
 	
-	public Attraction(String title, Integer areaCode, Integer siGunguCode, Double latitude, Double longitude) {
+	public Attraction(Integer no, String title, Integer areaCode, Integer siGunguCode, Double latitude, Double longitude) {
+		this.no = no;
 		this.title = title;
 		this.areaCode = areaCode;
 		this.siGunGuCode = siGunguCode;

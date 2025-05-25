@@ -2,6 +2,8 @@ package com.ssafy.tripon.review.application;
 
 import com.ssafy.tripon.common.exception.CustomException;
 import com.ssafy.tripon.common.exception.ErrorCode;
+import com.ssafy.tripon.like.domain.LikeRepository;
+import com.ssafy.tripon.member.domain.MemberRepository;
 import com.ssafy.tripon.review.application.command.ReviewSaveCommand;
 import com.ssafy.tripon.review.application.command.ReviewUpdateCommand;
 import com.ssafy.tripon.review.domain.Review;
@@ -20,7 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class ReviewService {
 
 	private final ReviewRepository reviewRepository;
+	private final LikeRepository likeRepository;
 	private final ReviewDetailRepository reviewDetailRepository;
+	private final MemberRepository memberRepository;
 
 	public Integer saveReview(ReviewSaveCommand command) {
 		Review review = command.toReview();
@@ -28,21 +32,30 @@ public class ReviewService {
 		return review.getId();
 	}
 
-	public List<ReviewServiceResponse> findAllReviews() {
-		return reviewRepository.findAll().stream().map(ReviewServiceResponse::from).toList();
+	public List<ReviewServiceResponse> findAllReviews(String email) {
+		return reviewRepository.findAll(email).stream().map(review -> {
+			int likes = likeRepository.getCountByReviewId(review.getId());
+			boolean liked = likeRepository.existsByReviewIdAndEmail(review.getId(), email);
+
+			return ReviewServiceResponse.from(review, likes, liked);
+		}).toList();
 	}
 
-	public ReviewServiceResponse findReview(Integer id) {
+	public ReviewServiceResponse findReview(Integer id, String email) {
 		Review review = Optional.ofNullable(reviewRepository.findById(id))
 				.orElseThrow(() -> new CustomException(ErrorCode.REVIEWS_NOT_FOUND));
 
-		return ReviewServiceResponse.from(review, reviewDetailRepository.findAllIdByReviewId(id));
+		List<Integer> detailIds = reviewDetailRepository.findAllIdByReviewId(id);
+		int likes = likeRepository.getCountByReviewId(id);
+		boolean liked = likeRepository.existsByReviewIdAndEmail(id, email);
+		String memberName = memberRepository.findByEmail(review.getMemberEmail()).getName();
+		return ReviewServiceResponse.from(review, detailIds, likes, liked, memberName);
 	}
 
 	public ReviewServiceResponse updateReview(ReviewUpdateCommand command) {
 		Review review = command.toReview();
 		int result = reviewRepository.update(review);
-
+		
 		// 예외처리
 		if (result == 0) {
 			throw new CustomException(ErrorCode.REVIEWS_NOT_FOUND);

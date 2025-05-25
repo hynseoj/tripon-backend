@@ -20,6 +20,23 @@
         FROM reviewdetails
         WHERE id = #{id}
     </select>
+    
+    <select id="findByReviewId" parameterType="Integer" resultType="ReviewDetail">
+    SELECT 
+        id, 
+        review_id AS reviewId, 
+        `day`, 
+        content, 
+        created_at AS createdAt, 
+        updated_at AS updatedAt
+    FROM 
+        reviewdetails
+    WHERE 
+        review_id = #{reviewId}
+    ORDER BY 
+        `day` ASC
+</select>
+    
 
     <update id="update" parameterType="ReviewDetail">
         UPDATE reviewdetails

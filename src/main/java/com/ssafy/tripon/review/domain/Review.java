@@ -18,7 +18,13 @@ public class Review {
     private LocalDateTime updatedAt;
 
     public Review(String memberEmail, String title) {
-        this.memberEmail = memberEmail;
+    	this.memberEmail = memberEmail;
+        this.title = title;
+    }
+    
+    public Review(Integer id, String memberEmail, String title) {
+        this.id = id;
+    	this.memberEmail = memberEmail;
         this.title = title;
     }
 }

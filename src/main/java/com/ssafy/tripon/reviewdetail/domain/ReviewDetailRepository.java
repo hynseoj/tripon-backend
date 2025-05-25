@@ -8,7 +8,10 @@ public interface ReviewDetailRepository {
 
     void save(ReviewDetail reviewDetail);
     List<Integer> findAllIdByReviewId(Integer reviewId);
+    
     ReviewDetail findById(Integer id);
     int update(ReviewDetail reviewDetail);
     void deleteById(Integer id);
+
+	List<ReviewDetail> findByReviewId(Integer reviewId);
 }

@@ -56,7 +56,6 @@ public class ReviewDetailService {
 			}
 
 		}
-
 		return ReviewDetailServiceResponse.from(reviewDetail, attractions, pictures);
 	}
 
@@ -71,7 +70,6 @@ public class ReviewDetailService {
 		for (ReviewAttraction reviewAttraction : reviewAttractions) {
 			attractions.add(attractionRepository.findAttractionById(reviewAttraction.getAttractionId()));
 		}
-
 		// reviewdetails-pictures
 		List<ReviewPicture> reviewPictures = reviewPictureRepository.findAllByReviewDetailId(id);
 		List<String> pictures = new ArrayList<>();
@@ -85,7 +83,6 @@ public class ReviewDetailService {
 	public ReviewDetailServiceResponse updateReviewDetail(ReviewDetailUpdateCommand command,
 			List<MultipartFile> images) {
 		ReviewDetail reviewDetail = command.toReviewDetail();
-
 		int result = reviewDetailRepository.update(reviewDetail);
 
 		// 예외처리
@@ -111,12 +108,15 @@ public class ReviewDetailService {
 
 		// reviewdetails-pictures
 		List<String> pictures = new ArrayList<>();
-		for (MultipartFile image : images) {
-			String storedUrl = fileStorageService.upload(image);
-			pictures.add(storedUrl);
-			reviewPictureRepository
-					.save(new ReviewPicture(reviewDetail.getId(), image.getOriginalFilename(), storedUrl));
+		if(images != null) {
+			for (MultipartFile image : images) {
+				String storedUrl = fileStorageService.upload(image);
+				pictures.add(storedUrl);
+				reviewPictureRepository
+						.save(new ReviewPicture(reviewDetail.getId(), image.getOriginalFilename(), storedUrl));
+			}	
 		}
+		
 
 		return ReviewDetailServiceResponse.from(reviewDetail, attractions, pictures);
 	}
@@ -136,4 +136,36 @@ public class ReviewDetailService {
 		reviewPictureRepository.deleteAllByReviewDetailId(id);
 		reviewDetailRepository.deleteById(id);
 	}
+
+	public List<ReviewDetailServiceResponse> findReviewDetailByReviewId(Integer reviewId) {
+		// reviewId로 연결된 모든 ReviewDetail 조회
+		List<ReviewDetail> reviewDetails = reviewDetailRepository.findByReviewId(reviewId);
+
+		if (reviewDetails.isEmpty()) {
+			throw new CustomException(ErrorCode.REVIEWDETAILS_NOT_FOUND);
+		}
+
+		List<ReviewDetailServiceResponse> result = new ArrayList<>();
+
+		for (ReviewDetail reviewDetail : reviewDetails) {
+			Integer detailId = reviewDetail.getId();
+
+			// 해당 reviewDetail에 연결된 attraction 조회
+			List<ReviewAttraction> reviewAttractions = reviewAttractionRepository.findAllByReviewDetailId(detailId);
+			List<Attraction> attractions = new ArrayList<>();
+			for (ReviewAttraction reviewAttraction : reviewAttractions) {
+				attractions.add(attractionRepository.findAttractionById(reviewAttraction.getAttractionId()));
+			}
+
+			// 해당 reviewDetail에 연결된 사진 조회
+			List<ReviewPicture> reviewPictures = reviewPictureRepository.findAllByReviewDetailId(detailId);
+			List<String> pictures = reviewPictures.stream().map(ReviewPicture::getUrl).toList();
+
+			// 변환하여 리스트에 추가
+			result.add(ReviewDetailServiceResponse.from(reviewDetail, attractions, pictures));
+		}
+
+		return result;
+	}
+
 }

@@ -12,6 +12,7 @@
     <select id="findAll" resultType="Review">
         SELECT id, member_email as memberEmail, title, created_at as createdAt, updated_at as updatedAt
         FROM reviews
+        ORDER BY created_at desc
     </select>
 
     <select id="findById" parameterType="Integer" resultType="Review">

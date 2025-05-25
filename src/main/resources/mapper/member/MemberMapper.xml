@@ -37,6 +37,8 @@
 		<if test="password != null and password != ''">
 			, password = #{password}
 		</if>
+		where email = #{email}
+		
 	</update>
 
 

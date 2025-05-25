@@ -4,9 +4,10 @@ import com.ssafy.tripon.member.application.LoginServiceResponse;
 
 public record LoginResponse(
         String name,
-        String accessToken
+        String accessToken,
+        String profileImageUrl
 ) {
     public static LoginResponse from(LoginServiceResponse response) {
-        return new LoginResponse(response.name(), response.tokenPair().accessToken().token());
+        return new LoginResponse(response.name(), response.tokenPair().accessToken().token(), response.profileImageUrl());
     }
 }

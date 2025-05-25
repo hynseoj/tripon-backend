@@ -18,6 +18,7 @@ import com.ssafy.tripon.member.domain.Member;
 import com.ssafy.tripon.member.domain.MemberRepository;
 import com.ssafy.tripon.member.presentation.request.MemberUpdateRequest;
 import com.ssafy.tripon.member.presentation.response.MemberResponse;
+import com.ssafy.tripon.reviewpicture.domain.ReviewPicture;
 
 import jakarta.validation.Valid;
 
@@ -47,8 +48,13 @@ public class MemberService {
 	public LoginServiceResponse login(MemberLoginCommand command) {
 		Member foundMember = Optional.ofNullable(memberRepository.findByEmail(command.email()))
 				.orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+		System.out.println("입력된 비밀번호: " + command.password());
+		System.out.println("DB 비밀번호: " + foundMember.getPassword());
+		System.out.println("matches: " + passwordEncoder.matches(command.password(), foundMember.getPassword()));
 
 		if (!passwordEncoder.matches(command.password(), foundMember.getPassword())) {
+			System.out.println(command.password());
+			System.out.println(foundMember.getPassword());
 			throw new CustomException(UNAUTHORIZED);
 		}
 
@@ -119,12 +125,22 @@ public class MemberService {
 		return MemberResponse.from(memberRepository.findByEmail(email));
 	}
 
-	public LoginServiceResponse updateMember(MemberUpdateCommand command) {
+	public LoginServiceResponse updateMember(MemberUpdateCommand command, MultipartFile profileImage) {
+		// 프로필 사진 있으면 저장
+		String storedUrl = null;
+		if (profileImage != null) {
+			storedUrl = fileStorageService.upload(profileImage);
+		}
 		if (command.password() != null && !command.password().isBlank()) {
-			memberRepository.update(command.toMember(passwordEncoder.encode(command.password())));
+			memberRepository.update(command.toMember(passwordEncoder.encode(command.password()),
+					profileImage.getOriginalFilename(), storedUrl));
 		} else {
+			if (profileImage == null) {
+				memberRepository.update(command.toMember(null, null));
+			} else {
+				memberRepository.update(command.toMember(profileImage.getOriginalFilename(), storedUrl));
+			}
 
-			memberRepository.update(command.toMember());
 		}
 
 		Member member = memberRepository.findByEmail(command.email());
@@ -132,7 +148,29 @@ public class MemberService {
 		Token accessToken = jwtTokenProvider.createAccessToken(member);
 		Token refreshToken = jwtTokenProvider.createRefreshToken(member);
 
-		return new LoginServiceResponse(member.getName(), new TokenPair(accessToken, refreshToken));
+		return new LoginServiceResponse(member.getName(), new TokenPair(accessToken, refreshToken),
+				member.getProfileImageUrl());
+	}
+
+	public LoginServiceResponse deleteProfileImage(String email) {
+		// 1. 사용자 조회
+		Member member = memberRepository.findByEmail(email);
+		System.out.println(email);
+		
+		// s3에서 이미지 삭제
+		fileStorageService.delete(member.getProfileImageUrl());
+
+		// 2. 이미지 정보 초기화
+		member.setProfileImageName(null);
+		member.setProfileImageUrl(null);
+		memberRepository.update(member);
+
+		// 3. 새로운 토큰 발급
+		Token accessToken = jwtTokenProvider.createAccessToken(member);
+		Token refreshToken = jwtTokenProvider.createRefreshToken(member);
+
+		return new LoginServiceResponse(member.getName(), new TokenPair(accessToken, refreshToken),
+				member.getProfileImageUrl());
 	}
 
 }

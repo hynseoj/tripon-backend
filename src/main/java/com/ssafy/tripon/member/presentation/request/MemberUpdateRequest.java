@@ -6,12 +6,9 @@ import jakarta.validation.constraints.NotBlank;
 public record MemberUpdateRequest(
         @NotBlank
         String name,
-        String password,
-        String profileImageName, 
-        String profileImageUrl
+        String password
 ) {
     public MemberUpdateCommand toCommand(String email) {
-        return new MemberUpdateCommand(email, name, password, profileImageName, 
-                profileImageUrl);
+        return new MemberUpdateCommand(email, name, password);
     }
 }

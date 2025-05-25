@@ -5,9 +5,10 @@ import com.ssafy.tripon.member.domain.Member;
 
 public record LoginServiceResponse(
         String name,
-        TokenPair tokenPair
+        TokenPair tokenPair,
+        String profileImageUrl
 ) {
     public static LoginServiceResponse of(Member member, TokenPair tokenPair) {
-        return new LoginServiceResponse(member.getName(), tokenPair);
+        return new LoginServiceResponse(member.getName(), tokenPair, member.getProfileImageUrl());
     }
 }

@@ -6,8 +6,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -37,89 +39,78 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MemberController {
 
-    private final MemberService memberService;
+	private final MemberService memberService;
 
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
-        LoginServiceResponse response = memberService.login(request.toCommand());
+	@PostMapping("/login")
+	public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+		LoginServiceResponse response = memberService.login(request.toCommand());
+		System.out.println(response);
+		ResponseCookie cookie = ResponseCookie.from("refreshToken", response.tokenPair().refreshToken().token())
+				.httpOnly(true).path("/").maxAge(Duration.ofDays(7)).build();
 
-        ResponseCookie cookie = ResponseCookie.from("refreshToken", response.tokenPair().refreshToken().token())
-                .httpOnly(true)
-                .path("/")
-                .maxAge(Duration.ofDays(7))
-                .build();
+		System.out.println("로그인 끝!!!");
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(LoginResponse.from(response));
-    }
+		return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(LoginResponse.from(response));
+	}
 
-    @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@LoginMember Member member, @AuthToken Token token) {
-        memberService.logout(member, token);
-        return ResponseEntity.noContent().build();
-    }
+	@PostMapping("/logout")
+	public ResponseEntity<Void> logout(@LoginMember Member member, @AuthToken Token token) {
+		memberService.logout(member, token);
+		return ResponseEntity.noContent().build();
+	}
 
-    @PostMapping("/register")
-    public ResponseEntity<LoginResponse> register(
-            @Valid @RequestPart(value = "memberInfo") MemberRegisterRequest request,
-            @RequestPart(value = "profileImage", required = false) MultipartFile profileImage
-    ) {
-        LoginServiceResponse response = memberService.register(request.toCommand(), profileImage);
+	@PostMapping("/register")
+	public ResponseEntity<LoginResponse> register(
+			@Valid @RequestPart(value = "memberInfo") MemberRegisterRequest request,
+			@RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
+		LoginServiceResponse response = memberService.register(request.toCommand(), profileImage);
 
-        ResponseCookie cookie = ResponseCookie.from("refreshToken", response.tokenPair().refreshToken().token())
-                .httpOnly(true)
-                .path("/")
-                .maxAge(Duration.ofDays(7))
-                .build();
+		ResponseCookie cookie = ResponseCookie.from("refreshToken", response.tokenPair().refreshToken().token())
+				.httpOnly(true).path("/").maxAge(Duration.ofDays(7)).build();
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(LoginResponse.from(response));
-    }
+		return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(LoginResponse.from(response));
+	}
 
-    @PostMapping("/token/refresh")
-    public ResponseEntity<LoginResponse> refresh(@CookieValue(name = "refreshToken") String refreshToken) {
-        LoginServiceResponse response = memberService.refreshToken(new Token(refreshToken));
+	@PostMapping("/token/refresh")
+	public ResponseEntity<LoginResponse> refresh(@CookieValue(name = "refreshToken") String refreshToken) {
+		LoginServiceResponse response = memberService.refreshToken(new Token(refreshToken));
 
-        ResponseCookie cookie = ResponseCookie.from("refreshToken", response.tokenPair().refreshToken().token())
-                .httpOnly(true)
-                .path("/")
-                .maxAge(Duration.ofDays(7))
-                .build();
+		ResponseCookie cookie = ResponseCookie.from("refreshToken", response.tokenPair().refreshToken().token())
+				.httpOnly(true).path("/").maxAge(Duration.ofDays(7)).build();
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(LoginResponse.from(response));
-    }
-    
-    // 로그인한 사용자 정보 조회
-    @GetMapping("/me")
-    public ResponseEntity<MemberResponse> findMyInfo(@LoginMember Member member) {
-        MemberResponse response = memberService.findMemberByEmail(member.getEmail());
-        return ResponseEntity.ok(response);
-    }
+		return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(LoginResponse.from(response));
+	}
 
-    // 사용자 정보 수정
-    @PostMapping("/me")
-    public ResponseEntity<MemberUpdateResponse> updateMyInfo(
-        @LoginMember Member member,
-        @RequestBody @Valid MemberUpdateRequest request
-    ) {
-        LoginServiceResponse response = memberService.updateMember(request.toCommand(member.getEmail()));
+	// 로그인한 사용자 정보 조회
+	@GetMapping("/me")
+	public ResponseEntity<MemberResponse> findMyInfo(@LoginMember Member member) {
+		MemberResponse response = memberService.findMemberByEmail(member.getEmail());
+		return ResponseEntity.ok(response);
+	}
 
-        ResponseCookie cookie = ResponseCookie.from("refreshToken", response.tokenPair().refreshToken().token())
-                .httpOnly(true)
-                .path("/")
-                .maxAge(Duration.ofDays(7))
-                .build();
+	// 사용자 정보 수정
+	@PutMapping("/me")
+	public ResponseEntity<MemberUpdateResponse> updateMyInfo(@LoginMember Member member,
+			@RequestPart(value = "memberInfo") @Valid MemberUpdateRequest request,
+			@RequestPart(value = "profileImage", required = false) MultipartFile profileImage) {
+		LoginServiceResponse response = memberService.updateMember(request.toCommand(member.getEmail()), profileImage);
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.SET_COOKIE, cookie.toString())
-                .body(MemberUpdateResponse.from(response));
-    }
+		ResponseCookie cookie = ResponseCookie.from("refreshToken", response.tokenPair().refreshToken().token())
+				.httpOnly(true).path("/").maxAge(Duration.ofDays(7)).build();
 
+		return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
+				.body(MemberUpdateResponse.from(response));
+	}
 
+	@DeleteMapping("/me/profile")
+	public ResponseEntity<MemberUpdateResponse> deleteProfileImage(@LoginMember Member member) {
+		LoginServiceResponse response = memberService.deleteProfileImage(member.getEmail());
 
+		ResponseCookie cookie = ResponseCookie.from("refreshToken", response.tokenPair().refreshToken().token())
+				.httpOnly(true).path("/").maxAge(Duration.ofDays(7)).build();
+
+		return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString())
+				.body(MemberUpdateResponse.from(response));
+	}
 
 }

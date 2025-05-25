@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import com.ssafy.tripon.common.auth.JwtTokenProvider;
 import com.ssafy.tripon.common.auth.RefreshTokenService;
 import com.ssafy.tripon.common.auth.TokenBlacklistService;
-import com.ssafy.tripon.common.auth.TokenPair;
 import com.ssafy.tripon.common.exception.CustomException;
 import com.ssafy.tripon.member.application.command.MemberLoginCommand;
 import com.ssafy.tripon.member.application.command.MemberRegisterCommand;
@@ -66,24 +65,24 @@ class MemberServiceTest {
         MemberLoginCommand command = new MemberLoginCommand("test@test.com", "password123");
 
         // when
-        TokenPair tokens = memberService.login(command);
+        LoginServiceResponse response = memberService.login(command);
 
         // then
-        assertThat(tokens.accessToken()).isNotNull();
-        assertThat(tokens.refreshToken()).isNotNull();
+        assertThat(response.tokenPair().accessToken()).isNotNull();
+        assertThat(response.tokenPair().refreshToken()).isNotNull();
     }
 
     @Test
     void 로그아웃할_수_있다() {
         // given
         MemberLoginCommand command = new MemberLoginCommand("test@test.com", "password123");
-        TokenPair tokens = memberService.login(command);
+        LoginServiceResponse response = memberService.login(command);
 
         // when
-        memberService.logout(member, tokens.accessToken());
+        memberService.logout(member, response.tokenPair().accessToken());
 
         // then
-        String jti = jwtTokenProvider.getJti(tokens.accessToken());
+        String jti = jwtTokenProvider.getJti(response.tokenPair().accessToken());
         assertThat(tokenBlacklistService.isBlacklisted(jti)).isTrue();
         assertThat(refreshTokenService.getRefreshToken(member.getEmail()).token()).isNull();
     }
@@ -102,7 +101,7 @@ class MemberServiceTest {
         MultipartFile image = new MockMultipartFile("images", file.getName(), "image/png", input);
 
         // when
-        TokenPair tokens = memberService.register(command, image);
+        LoginServiceResponse response = memberService.register(command, image);
 
         // then: DB에 회원이 저장된다
         Member savedMember = memberRepository.findByEmail("new@test.com");
@@ -113,8 +112,8 @@ class MemberServiceTest {
         assertThat(savedMember.getProfileImageUrl()).isNotBlank();
 
         // then: 토큰 페어가 발급된다
-        assertThat(tokens.accessToken().token()).isNotNull();
-        assertThat(tokens.refreshToken().token()).isNotNull();
+        assertThat(response.tokenPair().accessToken().token()).isNotNull();
+        assertThat(response.tokenPair().refreshToken().token()).isNotNull();
     }
 
     @Test

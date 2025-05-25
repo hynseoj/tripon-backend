@@ -1,8 +1,8 @@
 package com.ssafy.tripon.plandetail.domain;
 
-import org.apache.ibatis.annotations.Mapper;
-
 import com.ssafy.tripon.plandetail.application.PlanDetailServiceResponse;
+import java.util.List;
+import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface PlanDetailRepository {
@@ -16,4 +16,5 @@ public interface PlanDetailRepository {
 	// N일차 계획 삭제
 	int deletePlanDetail(Integer id);
 
+	List<Integer> findAllByPlanId(Integer planId);
 }

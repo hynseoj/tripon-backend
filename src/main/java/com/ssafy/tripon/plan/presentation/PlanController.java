@@ -8,6 +8,7 @@ import com.ssafy.tripon.plan.application.command.PlanUpdateCommand;
 import com.ssafy.tripon.plan.presentation.request.PlanSaveRequest;
 import com.ssafy.tripon.plan.presentation.request.PlanUpdateRequest;
 import com.ssafy.tripon.plan.presentation.response.PlanFindAllByMemberIdResponse;
+import com.ssafy.tripon.plan.presentation.response.PlanFindByIdResponse;
 import jakarta.validation.Valid;
 import java.net.URI;
 import java.util.List;
@@ -49,9 +50,9 @@ public class PlanController {
 
 	// 계획 상세 조회
 	@GetMapping("/{planId}")
-	public ResponseEntity<PlanServiceResponse> findPlanById(@PathVariable int planId) {
+	public ResponseEntity<PlanFindByIdResponse> findPlanById(@PathVariable int planId) {
 		PlanServiceResponse response = planService.findPlanById(planId);
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok(PlanFindByIdResponse.from(response));
 	}
 
 	// 계획 수정

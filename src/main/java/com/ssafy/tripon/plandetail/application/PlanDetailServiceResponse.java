@@ -1,7 +1,6 @@
 package com.ssafy.tripon.plandetail.application;
 
 import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,8 +17,13 @@ public class PlanDetailServiceResponse {
 	@Setter
 	@ToString
 	public static class PlanAttractionServiceResponse {
+		private Integer id;
 		private String title;
+		private Integer areaCode;
+		private Integer siGunGuCode;
 		private Double latitude;
 		private Double longitude;
+		private String imageUrl;
+		private String address;
 	}
 }

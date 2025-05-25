@@ -15,9 +15,14 @@
 			ofType="com.ssafy.tripon.plandetail.application.PlanDetailServiceResponse$PlanAttractionServiceResponse"
 			column="detail_id"
 			javaType="java.util.ArrayList">
+			<result property="id" column="attraction_id" />
 			<result property="title" column="title" />
+			<result property="areaCode" column="area_code" />
+			<result property="siGunGuCode" column="si_gun_gu_code" />
 			<result property="latitude" column="latitude" />
 			<result property="longitude" column="longitude" />
+			<result property="imageUrl" column="first_image1" />
+			<result property="address" column="addr1" />
 		</collection>
 
 	</resultMap>
@@ -34,15 +39,18 @@
 		SELECT
 		d.id AS detail_id,
 		d.day,
+		a.id AS attraction_id,
 		a.title,
+		a.area_code,
+		a.si_gun_gu_code,
 		a.latitude,
-		a.longitude
+		a.longitude,
+		a.first_image1,
+		a.addr1
 		FROM plandetails d
 		JOIN plan_attractions pa ON d.id = pa.plandetail_id
 		JOIN (
-		SELECT no AS id, title, latitude, longitude FROM attractions
-		UNION
-		SELECT id, title, latitude, longitude FROM custom_attractions
+		SELECT id, title, area_code, si_gun_gu_code, latitude, longitude, first_image1, addr1 FROM unified_attractions_view
 		) a ON pa.attraction_id = a.id
 		where d.id = #{planDetailId}
 	</select>
@@ -51,4 +59,10 @@
 		delete from plandetails
 		where id = #{id}
 	</delete>
+
+	<select id="findAllByPlanId" parameterType="Integer" resultType="Integer">
+		SELECT id
+		FROM plandetails
+		WHERE plan_id = #{planId}
+	</select>
 </mapper>

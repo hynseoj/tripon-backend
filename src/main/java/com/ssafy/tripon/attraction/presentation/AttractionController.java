@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/attractions")
 public class AttractionController {
+
 	private final AttractionService attractionService;
 
 	// 관광지 생성

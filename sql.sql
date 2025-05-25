@@ -195,6 +195,7 @@ CREATE TABLE `tripon`.`custom_attractions` (
   COLLATE=utf8mb4_0900_ai_ci;
 
 
+
 -- -----------------------------------------------------
 -- Table `tripon`.`liked_reviews`
 -- -----------------------------------------------------
@@ -442,3 +443,4 @@ select * from plans;
 ALTER TABLE members
   MODIFY COLUMN password VARCHAR(255) NOT NULL;
 
+ALTER TABLE comments MODIFY parent_id INT NULL;

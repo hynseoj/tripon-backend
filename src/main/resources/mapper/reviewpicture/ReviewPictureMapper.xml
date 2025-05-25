@@ -7,29 +7,39 @@
 
 	<insert id="save" parameterType="ReviewPicture"
 		useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO pictures (reviewdetail_id, picture_original, picture_modify)
-		VALUES (#{reviewDetailId}, #{originalName}, #{url})
+		INSERT INTO pictures
+		(reviewdetail_id, picture_original, picture_modify)
+		VALUES
+		(#{reviewDetailId}, #{originalName}, #{url})
 	</insert>
 
 	<select id="findAllByReviewDetailId" parameterType="Integer"
 		resultType="ReviewPicture">
-		SELECT id, reviewdetail_id as reviewDetailId, picture_original as
-		originalName, picture_modify as url, created_at as createdAt,
+		SELECT id, reviewdetail_id as reviewDetailId,
+		picture_original as
+		originalName, picture_modify as url, created_at as
+		createdAt,
 		updated_at as updatedAt
 		FROM pictures
-		WHERE reviewdetail_id = #{reviewDetailId}
+		WHERE reviewdetail_id =
+		#{reviewDetailId}
 	</select>
 
 	<delete id="deleteAllByReviewDetailId" parameterType="Integer">
-		DELETE FROM pictures
+		DELETE FROM
+		pictures
 		WHERE reviewdetail_id = #{reviewDetailId}
 	</delete>
-	
-	<select id="findFirstUrlByReviewDetailId" resultType="string">
-		SELECT picture_modify as url
-		FROM pictures
-		WHERE reviewdetail_id = #{reviewDetailId}
-		LIMIT 1
+
+	<select id="findFirstUrlByReviewId" resultType="string">
+		SELECT
+		picture_modify as url
+		FROM reviewdetails d
+		JOIN pictures p ON d.id = p.reviewdetail_id
+		WHERE d.review_id = #{reviewId}
+		ORDER BY d.day ASC
+		LIMIT 1;
+
 	</select>
 
 </mapper>

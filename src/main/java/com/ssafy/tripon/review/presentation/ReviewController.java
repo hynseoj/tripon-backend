@@ -69,6 +69,7 @@ public class ReviewController {
 	@GetMapping("/popular")
 	public ResponseEntity<List<PopularReviewResponse>> findPopularReview() {
 	    List<PopularReviewResponse> result = reviewService.findPopularReview();
+	    System.out.println(result.get(0));
 	    return ResponseEntity.ok(result);
 	}
 

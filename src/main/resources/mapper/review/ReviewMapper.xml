@@ -8,11 +8,13 @@
 	<insert id="save" parameterType="Review" useGeneratedKeys="true"
 		keyProperty="id">
 		INSERT INTO reviews (member_email, title)
-		VALUES (#{memberEmail}, #{title})
+		VALUES
+		(#{memberEmail}, #{title})
 	</insert>
 
 	<select id="findAll" resultType="Review">
-		SELECT id, member_email as memberEmail, title, created_at as createdAt,
+		SELECT id, member_email as
+		memberEmail, title, created_at as createdAt,
 		updated_at as updatedAt
 		FROM reviews
 		ORDER BY created_at desc
@@ -20,7 +22,8 @@
 
 	<select id="findById" parameterType="Integer"
 		resultType="Review">
-		SELECT id, member_email as memberEmail, title, created_at as createdAt,
+		SELECT id, member_email as memberEmail, title, created_at
+		as createdAt,
 		updated_at as updatedAt
 		FROM reviews
 		WHERE id = #{id}
@@ -28,29 +31,37 @@
 
 	<update id="update" parameterType="Review">
 		UPDATE reviews
-		SET title = #{title},
+		SET title =
+		#{title},
 		updated_at = NOW()
 		WHERE id = #{id}
 	</update>
 
 	<delete id="deleteById" parameterType="Integer">
 		DELETE FROM reviews
-		WHERE id = #{id}
+		WHERE
+		id = #{id}
 	</delete>
 
 	<select id="findTop4ByLikeInLastMonth" resultType="Review">
-		SELECT r.*
+		SELECT id,
+		member_email as memberEmail, title, created_at as createdAt,
+		updated_at as updatedAt
 		FROM reviews r
 		JOIN (
-		SELECT review_id, COUNT(*) AS like_count
+		SELECT review_id, COUNT(*)
+		AS like_count
 		FROM liked_reviews
-		WHERE created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
+		WHERE created_at >= DATE_SUB(NOW(),
+		INTERVAL 1 MONTH)
 		GROUP BY review_id
 		ORDER BY like_count DESC
 		LIMIT 4
-		) AS top_liked
+		) AS
+		top_liked
 		ON r.id = top_liked.review_id
-		ORDER BY top_liked.like_count DESC
+		ORDER BY top_liked.like_count
+		DESC
 	</select>
 
 </mapper>

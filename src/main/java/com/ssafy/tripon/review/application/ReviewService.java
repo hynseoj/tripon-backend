@@ -97,13 +97,15 @@ public class ReviewService {
 	    List<Review> topReviews = reviewRepository.findTop4ByLikeInLastMonth();
 
 	    return topReviews.stream().map(review -> {
-	        Integer reviewDetailId = reviewDetailRepository.findIdByReviewIdAndDay(review.getId(), 1);
+	    	Integer reviewId = review.getId();
+	        Integer reviewDetailId = reviewDetailRepository.findIdByReviewIdAndDay(reviewId, 1);
 	        String content = reviewDetailRepository.findContentById(reviewDetailId);
-	        String imageUrl = reviewPictureRepository.findFirstUrlByReviewDetailId(reviewDetailId);
-
+	        String imageUrl = reviewPictureRepository.findFirstUrlByReviewId(reviewId);
+			String memberName = memberRepository.findByEmail(review.getMemberEmail()).getName();
 	        return new PopularReviewResponse(
 	            review.getId(),
 	            review.getTitle(),
+	            memberName,
 	            content,
 	            imageUrl
 	        );

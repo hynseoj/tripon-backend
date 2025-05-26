@@ -70,19 +70,16 @@ public class AttractionService {
 		return types.stream().map(ContentTypeResponse::from).toList();
 	}
 
-	public Attraction findOrRegisterByName(String title) {
-		// 1. 쿼리에 넘길 최소한의 데이터 구성 (title만 사용)
-		AttractionSaveCommand command = new AttractionSaveCommand(title, null, null, null, null);
-
-		Integer existingId = attractionRepository.findAttraction(command);
+	public Attraction findOrRegisterByName(AttractionSaveCommand command) {
+		Attraction attraction = attractionRepository.findUniqueAttraction(command);
 
 		// 2. 이미 존재하면 DB에서 전체 정보 조회 후 반환
-		if (existingId != null) {
-			return attractionRepository.findAttractionById(existingId); // 이 메서드는 있어야 해요
+		if (attraction != null) {
+			return attraction;
 		}
 
-		// 3. 존재하지 않으면 '임시 객체' 반환 (DB에 저장은 프론트에서 처리)
-		return new Attraction(title);
+		// 3. 존재하지 않으면 나중에 저장
+		return new Attraction(command.title());
 	}
 
 }

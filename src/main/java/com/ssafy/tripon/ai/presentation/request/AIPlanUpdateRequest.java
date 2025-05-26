@@ -4,14 +4,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public record AIPlanUpdateRequest(
-    String previousPlan,
-    String userPrompt
+    String likeStyle,
+    String dislikeStyle,
+    String otherMemo
 ) {
 
-    public Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
-        map.put("previousPlan", previousPlan);
-        map.put("userPrompt", userPrompt);
-        return map;
-    }
+	public Map<String, Object> toMap() {
+	    return Map.of(
+	        "like", this.likeStyle,
+	        "dislike", this.dislikeStyle,
+	        "etc", this.otherMemo
+	    );
+	}
+
 }

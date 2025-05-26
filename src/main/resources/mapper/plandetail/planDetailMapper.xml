@@ -52,6 +52,7 @@
 		JOIN materialized_union_attractions a
 		ON pa.attraction_id = a.id
 		where d.id = #{planDetailId}
+		order by a.id
 	</select>
 	
 	<delete id="deletePlanDetail">

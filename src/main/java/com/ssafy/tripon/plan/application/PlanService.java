@@ -6,6 +6,7 @@ import com.ssafy.tripon.plan.application.command.PlanSaveCommand;
 import com.ssafy.tripon.plan.application.command.PlanUpdateCommand;
 import com.ssafy.tripon.plan.domain.Plan;
 import com.ssafy.tripon.plan.domain.PlanRepository;
+import com.ssafy.tripon.plandetail.domain.PlanAttractionRepository;
 import com.ssafy.tripon.plandetail.domain.PlanDetailRepository;
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +21,7 @@ public class PlanService {
 
 	private final PlanRepository planRepository;
 	private final PlanDetailRepository planDetailRepository;
+	private final PlanAttractionRepository planAttractionRepository;
 
 	public Integer savePlan(PlanSaveCommand command) {
 		Plan plan = command.toPlan();
@@ -48,6 +50,11 @@ public class PlanService {
 	}
 
 	public void deletePlanById(Integer id) {
+		List<Integer> details = planDetailRepository.findAllByPlanId(id);
+
+		details.forEach(planAttractionRepository::deletePlanAttractionByPlanDetailId);
+		details.forEach(planDetailRepository::deletePlanDetail);
+
 		int result = planRepository.deletePlanById(id);
 		if(result == 0) {
 			throw new CustomException(ErrorCode.PLANS_NOT_FOUND);

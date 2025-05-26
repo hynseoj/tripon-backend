@@ -51,6 +51,8 @@ public class PlanController {
 	        @RequestParam(defaultValue = "1") int page,
 	        @RequestParam(defaultValue = "5") int size
 	) {
+		PlanFindAllByMemberIdResponse res = planService.findPlans(member.getEmail(), page, size);
+		System.out.println(res);
 	    return ResponseEntity.ok(planService.findPlans(member.getEmail(), page, size));
 	}
 

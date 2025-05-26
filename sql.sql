@@ -434,6 +434,155 @@ SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
+select * from plans;
+
+ALTER TABLE members
+  MODIFY COLUMN password VARCHAR(255) NOT NULL;
+
+ALTER TABLE comments MODIFY parent_id INT NULL;
+
+
+CREATE TABLE IF NOT EXISTS materialized_union_attractions (
+  id               INT             NOT NULL,
+  source           ENUM('attractions','custom') NOT NULL,
+  title            VARCHAR(500)    NULL,
+  area_code        INT             NULL,
+  si_gun_gu_code   INT             NULL,
+  latitude         DECIMAL(20,17)  NULL,
+  longitude        DECIMAL(20,17)  NULL,
+  first_image1     VARCHAR(100)    NULL,
+  addr1            VARCHAR(100)    NULL,
+  content_type_id  INT             NULL,
+  PRIMARY KEY (source, id),
+  INDEX idx_area      (area_code),
+  INDEX idx_sigungu   (si_gun_gu_code)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+TRUNCATE TABLE materialized_union_attractions;
+INSERT INTO materialized_union_attractions
+SELECT
+  no           AS id,
+  'attractions' AS source,
+  title,
+  area_code,
+  si_gun_gu_code,
+  latitude,
+  longitude,
+  first_image1,
+  addr1,
+  content_type_id
+FROM attractions
+UNION ALL
+SELECT
+  id            AS id,
+  'custom'      AS source,
+  title,
+  area_code,
+  si_gun_gu_code,
+  latitude,
+  longitude,
+  first_image1,
+  addr1,
+  content_type_id
+FROM custom_attractions;
+
+
+DELIMITER $$
+
+-- INSERT
+CREATE TRIGGER trg_attractions_ai
+AFTER INSERT ON attractions
+FOR EACH ROW
+BEGIN
+  INSERT INTO materialized_union_attractions
+    (id, source, title, area_code, si_gun_gu_code, latitude, longitude, first_image1, addr1, content_type_id)
+  VALUES
+    (NEW.no, 'attractions', NEW.title, NEW.area_code, NEW.si_gun_gu_code, NEW.latitude, NEW.longitude, NEW.first_image1, NEW.addr1, NEW.content_type_id)
+  ON DUPLICATE KEY UPDATE
+    title           = NEW.title,
+    area_code       = NEW.area_code,
+    si_gun_gu_code  = NEW.si_gun_gu_code,
+    latitude        = NEW.latitude,
+    longitude       = NEW.longitude,
+    first_image1    = NEW.first_image1,
+    addr1           = NEW.addr1,
+    content_type_id = NEW.content_type_id;
+END$$
+
+-- UPDATE
+CREATE TRIGGER trg_attractions_au
+AFTER UPDATE ON attractions
+FOR EACH ROW
+BEGIN
+  UPDATE materialized_union_attractions
+  SET
+    title           = NEW.title,
+    area_code       = NEW.area_code,
+    si_gun_gu_code  = NEW.si_gun_gu_code,
+    latitude        = NEW.latitude,
+    longitude       = NEW.longitude,
+    first_image1    = NEW.first_image1,
+    addr1           = NEW.addr1,
+    content_type_id = NEW.content_type_id
+  WHERE source = 'attractions' AND id = OLD.no;
+END$$
+
+-- DELETE
+CREATE TRIGGER trg_attractions_ad
+AFTER DELETE ON attractions
+FOR EACH ROW
+BEGIN
+  DELETE FROM materialized_union_attractions
+  WHERE source = 'attractions' AND id = OLD.no;
+END$$
+
+-- custom_attractions 쪽 트리거 (source='custom')
+CREATE TRIGGER trg_custom_ai
+AFTER INSERT ON custom_attractions
+FOR EACH ROW
+BEGIN
+  INSERT INTO materialized_union_attractions
+    (id, source, title, area_code, si_gun_gu_code, latitude, longitude, first_image1, addr1, content_type_id)
+  VALUES
+    (NEW.id, 'custom', NEW.title, NEW.area_code, NEW.si_gun_gu_code, NEW.latitude, NEW.longitude, NEW.first_image1, NEW.addr1, NEW.content_type_id)
+  ON DUPLICATE KEY UPDATE
+    title           = NEW.title,
+    area_code       = NEW.area_code,
+    si_gun_gu_code  = NEW.si_gun_gu_code,
+    latitude        = NEW.latitude,
+    longitude       = NEW.longitude,
+    first_image1    = NEW.first_image1,
+    addr1           = NEW.addr1,
+    content_type_id = NEW.content_type_id;
+END$$
+
+CREATE TRIGGER trg_custom_au
+AFTER UPDATE ON custom_attractions
+FOR EACH ROW
+BEGIN
+  UPDATE materialized_union_attractions
+  SET
+    title           = NEW.title,
+    area_code       = NEW.area_code,
+    si_gun_gu_code  = NEW.si_gun_gu_code,
+    latitude        = NEW.latitude,
+    longitude       = NEW.longitude,
+    first_image1    = NEW.first_image1,
+    addr1           = NEW.addr1,
+    content_type_id = NEW.content_type_id
+  WHERE source = 'custom' AND id = OLD.id;
+END$$
+
+CREATE TRIGGER trg_custom_ad
+AFTER DELETE ON custom_attractions
+FOR EACH ROW
+BEGIN
+  DELETE FROM materialized_union_attractions
+  WHERE source = 'custom' AND id = OLD.id;
+END$$
+
+DELIMITER ;
+
 insert into members (email, name, password, role) values ('admin@ssafy.com', 'admin', '1234', 'ADMIN');
 insert into plans (email, title, start_date, end_date, memo) 
 values ('admin@ssafy.com', 'admin', '2025-04-01', '2025-04-04', '첫번째 계획!');

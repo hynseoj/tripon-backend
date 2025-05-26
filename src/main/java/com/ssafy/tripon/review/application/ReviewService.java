@@ -45,10 +45,15 @@ public class ReviewService {
 
 	public Integer saveReview(ReviewSaveCommand command) {
 		String storedUrl = null;
+		Review review = null;
+		
 		if (command.thumbnail() != null) {
 			storedUrl = fileStorageService.upload(command.thumbnail());
+			review = command.toReview(command.thumbnail().getOriginalFilename(), storedUrl);
+		}else {
+			review = command.toReview();	
 		}
-		Review review = command.toReview(command.thumbnail().getOriginalFilename(), storedUrl);
+		
 		reviewRepository.save(review);
 		return review.getId();
 	}

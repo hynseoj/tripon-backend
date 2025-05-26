@@ -33,7 +33,7 @@
 
 	<!-- 페이징된 계획 리스트 -->
 	<select id="findPlansByMemberEmail" resultType="Plan">
-		select title, start_date as startDate, end_date as endDate,
+		select id, title, start_date as startDate, end_date as endDate,
 		memo, created_at as createdAt, updated_at as updatedAt
 		from plans
 		WHERE email = #{email}

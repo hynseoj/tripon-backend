@@ -24,7 +24,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/v1/reviews")
@@ -34,8 +36,11 @@ public class ReviewController {
 	private final ReviewService reviewService;
 
 	@PostMapping
-	public ResponseEntity<Void> saveReview(@Valid @RequestBody ReviewSaveRequest request, @LoginMember Member member) {
-		Integer id = reviewService.saveReview(request.toCommand(member.getEmail())); // @Todo: 로그인 구현 후 수정
+	public ResponseEntity<Void> saveReview(@Valid @RequestPart ReviewSaveRequest request,
+			@Valid @RequestPart(value = "thumbnail", required = false) MultipartFile thumbnail,
+			@LoginMember Member member) {
+
+		Integer id = reviewService.saveReview(request.toCommand(member.getEmail(), thumbnail));
 		return ResponseEntity.created(URI.create("/api/v1/reviews/" + id)).build();
 	}
 
@@ -45,19 +50,30 @@ public class ReviewController {
 		return ResponseEntity.ok(ReviewFindAllResponse.from(responses));
 	}
 
+	@GetMapping("/me")
+	public ResponseEntity<ReviewFindAllResponse> findAllReviewsByMemberId(@LoginMember Member member) {
+		List<ReviewServiceResponse> responses = reviewService.findAllReviewsByMemberId(member.getEmail());
+		return ResponseEntity.ok(ReviewFindAllResponse.from(responses));
+	}
+
 	@GetMapping("/{reviewId}")
 	public ResponseEntity<ReviewFindResponse> findReview(@PathVariable(value = "reviewId") Integer id,
 			@LoginMember Member member) {
 		ReviewServiceResponse response = reviewService.findReview(id, member.getEmail());
+		System.out.println(response);
 		return ResponseEntity.ok(ReviewFindResponse.from(response));
 	}
 
 	@PutMapping("/{reviewId}")
 	public ResponseEntity<ReviewUpdateResponse> updateReview(@PathVariable(value = "reviewId") Integer id,
-			@Valid @RequestBody ReviewUpdateRequest request, @LoginMember Member member) {
-		System.out.println(id);
-		ReviewServiceResponse response = reviewService.updateReview(request.toCommand(id, member.getEmail()));
-		return ResponseEntity.ok(ReviewUpdateResponse.from(response)); // @Todo: 로그인 구현 후 수정
+			@Valid @RequestPart("request") ReviewUpdateRequest request,
+			@Valid @RequestPart(value = "thumbnail", required = false) MultipartFile thumbnail,
+			@LoginMember Member member) {
+		System.out.println("업데이트 썸네일: " + thumbnail);
+		ReviewServiceResponse response = reviewService
+				.updateReview(request.toCommand(id, member.getEmail(), thumbnail));
+
+		return ResponseEntity.ok(ReviewUpdateResponse.from(response));
 	}
 
 	@DeleteMapping("/{reviewId}")
@@ -65,12 +81,11 @@ public class ReviewController {
 		reviewService.deleteReview(id);
 		return ResponseEntity.noContent().build();
 	}
-	
+
 	@GetMapping("/popular")
 	public ResponseEntity<List<PopularReviewResponse>> findPopularReview() {
-	    List<PopularReviewResponse> result = reviewService.findPopularReview();
-	    System.out.println(result.get(0));
-	    return ResponseEntity.ok(result);
+		List<PopularReviewResponse> result = reviewService.findPopularReview();
+		return ResponseEntity.ok(result);
 	}
 
 }

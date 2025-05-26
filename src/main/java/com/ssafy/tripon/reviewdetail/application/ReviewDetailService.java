@@ -81,7 +81,7 @@ public class ReviewDetailService {
 	}
 
 	public ReviewDetailServiceResponse updateReviewDetail(ReviewDetailUpdateCommand command,
-			List<MultipartFile> images) {
+			List<MultipartFile> images, List<String> pictureUrls ) {
 		ReviewDetail reviewDetail = command.toReviewDetail();
 		int result = reviewDetailRepository.update(reviewDetail);
 
@@ -91,14 +91,17 @@ public class ReviewDetailService {
 		}
 
 		// S3에서 파일 삭제
-		List<ReviewPicture> reviewPictures = reviewPictureRepository.findAllByReviewDetailId(reviewDetail.getId());
-		for (ReviewPicture reviewPicture : reviewPictures) {
-			fileStorageService.delete(reviewPicture.getUrl());
-		}
+		List<ReviewPicture> existingPictures = reviewPictureRepository.findAllByReviewDetailId(reviewDetail.getId());
+		for (ReviewPicture picture : existingPictures) {
+	        if (pictureUrls == null || !pictureUrls.contains(picture.getUrl())) {
+	            fileStorageService.delete(picture.getUrl()); // S3에서 삭제
+	            reviewPictureRepository.delete(picture.getId()); // DB에서 삭제
+	        }
+	    }
+		
 		// 기존 데이터 삭제
 		reviewAttractionRepository.deleteAllByReviewDetailId(reviewDetail.getId());
-		reviewPictureRepository.deleteAllByReviewDetailId(reviewDetail.getId());
-
+		
 		// reviewdetails-attractions
 		List<Attraction> attractions = new ArrayList<>();
 		for (Integer attractionId : command.attractions()) {
@@ -117,7 +120,10 @@ public class ReviewDetailService {
 			}	
 		}
 		
-
+	    if (pictureUrls != null) {
+	        pictures.addAll(pictureUrls);
+	    }
+	    
 		return ReviewDetailServiceResponse.from(reviewDetail, attractions, pictures);
 	}
 

@@ -4,6 +4,7 @@ public record PopularReviewResponse(
 	    Integer id,
 	    String title,
 	    String memberName,
+	    String ProfileImageUrl,
 	    String previewContent,
 	    String thumbnailUrl
 	) {

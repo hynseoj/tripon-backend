@@ -57,7 +57,7 @@
 	</select>
 
 	<select id="findAllByEmails">
-		SELECT email, name FROM members WHERE email IN
+		SELECT email, name, profile_picture_modify as profileImageUrl FROM members WHERE email IN
 		<foreach item='email' collection='list' open='(' separator=','
 			close=')'>
 			#{email}

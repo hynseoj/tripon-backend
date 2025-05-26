@@ -30,6 +30,12 @@
 		pictures
 		WHERE reviewdetail_id = #{reviewDetailId}
 	</delete>
+	
+	<delete id="delete" parameterType="Integer">
+		DELETE FROM
+		pictures
+		WHERE id = #{id}
+	</delete>
 
 	<select id="findFirstUrlByReviewId" resultType="string">
 		SELECT

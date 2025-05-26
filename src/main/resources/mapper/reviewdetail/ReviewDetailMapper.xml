@@ -67,15 +67,30 @@
 		WHERE review_id = #{reviewId}
 	</delete>
 
+	<select id="findIdByReviewIdsAndDay" resultType="map">
+		SELECT review_id, id
+		FROM
+		reviewdetails
+		WHERE review_id IN
+		<foreach item="id" collection="reviewIds" open="("
+			separator="," close=")">
+			#{id}
+		</foreach>
+		AND day = #{day}
+	</select>
+	
 	<select id="findIdByReviewIdAndDay" resultType="Integer">
 		SELECT id
 		FROM
 		reviewdetails
 		WHERE review_id = #{reviewId} AND day = #{day}
 	</select>
+	
+	
 	<select id="findContentById" resultType="string">
 		SELECT content
-		FROM reviewdetails
+		FROM
+		reviewdetails
 		WHERE id = #{reviewDetailId}
 	</select>
 

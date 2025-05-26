@@ -9,10 +9,12 @@ public record ReviewServiceResponse(
         Integer id,
         String memberEmail,
         String memberName,
+        String profileImageUrl,
         String title,
         Integer likes,
         Boolean isLiked,
         List<Integer> details,
+        String thumbnailUrl,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
@@ -21,25 +23,29 @@ public record ReviewServiceResponse(
                 review.getId(),
                 review.getMemberEmail(),
                 "",
+                "",
                 review.getTitle(),
                 likes,
                 isLiked,
                 Collections.emptyList(),
+                review.getThumbnailUrl(),
                 review.getCreatedAt(),
                 review.getUpdatedAt()
                
         );
     }
 
-    public static ReviewServiceResponse from(Review review, List<Integer> details, Integer likes, boolean isLiked, String memberName) {
+    public static ReviewServiceResponse from(Review review, List<Integer> details, Integer likes, boolean isLiked, String memberName, String profileImageUrl) {
         return new ReviewServiceResponse(
                 review.getId(),
                 review.getMemberEmail(),
                 memberName,
+                profileImageUrl,
                 review.getTitle(),
                 likes,
                 isLiked,
                 details,
+                review.getThumbnailUrl(),
                 review.getCreatedAt(),
                 review.getUpdatedAt()
         );
@@ -50,10 +56,12 @@ public record ReviewServiceResponse(
                 review.getId(),
                 review.getMemberEmail(),
                 "",
+                "",
                 review.getTitle(),
                 null,
                 null,
                 Collections.emptyList(),
+                review.getThumbnailUrl(),
                 review.getCreatedAt(),
                 review.getUpdatedAt()
                
@@ -65,10 +73,12 @@ public record ReviewServiceResponse(
                 review.getId(),
                 review.getMemberEmail(),
                 "",
+                "",
                 review.getTitle(),
                 null,
                 null,
                 details,
+                review.getThumbnailUrl(),
                 review.getCreatedAt(),
                 review.getUpdatedAt()
         );

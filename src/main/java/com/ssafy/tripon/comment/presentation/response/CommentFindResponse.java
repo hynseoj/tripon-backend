@@ -10,12 +10,13 @@ public record CommentFindResponse(
 		Integer parentId,
 		String memberEmail,
 		String memberName,
+		String profileImageUrl,
 		LocalDateTime createdAt,
         LocalDateTime updatedAt
 		) {
 	public static CommentFindResponse from(CommentServiceResponse response) {
 		return new CommentFindResponse(response.id(), response.content(),
-				response.parentId(), response.memberEmail(), response.memberName(), response.createdAt(),
+				response.parentId(), response.memberEmail(), response.memberName(),response.profileImageUrl(), response.createdAt(),
 				response.updatedAt()
 				);
 	}

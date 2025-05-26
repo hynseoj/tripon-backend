@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -66,11 +67,21 @@ public class ReviewDetailController {
             @PathVariable(value = "reviewId") Integer reviewId,
             @PathVariable(value = "reviewDetailId") Integer reviewDetailId,
             @Valid @RequestPart(value = "reviewDetail") ReviewDetailUpdateRequest request,
-            @Valid @RequestPart(value = "images", required = false) List<MultipartFile> pictures
+            @RequestPart(value = "pictures", required = false) List<MultipartFile> pictures,
+            @RequestParam(value = "pictureUrls", required = false) List<String> pictureUrls
+
     ) {
-        ReviewDetailServiceResponse response = reviewDetailService.updateReviewDetail(request.toCommand(reviewDetailId, reviewId), pictures);
+        System.out.println("사진이 왔나? " + pictures);
+        System.out.println("기존 사진 URL이 왔나? " + pictureUrls);
+
+        ReviewDetailServiceResponse response = reviewDetailService.updateReviewDetail(
+                request.toCommand(reviewDetailId, reviewId),
+                pictures,
+                pictureUrls // ✅ 서비스에 함께 전달
+        );
         return ResponseEntity.ok(ReviewDetailUpdateResponse.from(response));
     }
+
 
     @DeleteMapping("/{reviewDetailId}")
     public ResponseEntity<Void> deleteReviewDetail(@PathVariable(value = "reviewDetailId") Integer reviewDetailId) {

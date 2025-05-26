@@ -9,13 +9,14 @@ public record CommentServiceResponse(
 		Integer parentId,
 		String memberEmail,
 		String memberName,
+		String profileImageUrl,
 		String content,
 		LocalDateTime createdAt,
 		LocalDateTime updatedAt
 		) {
-	public static CommentServiceResponse from(Comment comment, String memberName) {
+	public static CommentServiceResponse from(Comment comment, String memberName, String profileImageUrl) {
 		return new CommentServiceResponse(comment.getId(), comment.getParentId(), 
-				comment.getMemberId(), memberName,comment.getContent(), comment.getCreatedAt(), 
+				comment.getMemberId(), memberName,profileImageUrl,comment.getContent(), comment.getCreatedAt(), 
 				comment.getUpdatedAt());
 	}
 }

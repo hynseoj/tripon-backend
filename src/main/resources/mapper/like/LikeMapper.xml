@@ -7,26 +7,73 @@
 	<insert id="save" parameterType="Like" useGeneratedKeys="true"
 		keyProperty="id">
 		INSERT INTO liked_reviews (email, review_id)
-		VALUES (#{email}, #{reviewId})
+		VALUES
+		(#{email}, #{reviewId})
 	</insert>
 
 	<select id="getCountByReviewId" parameterType="Integer"
 		resultType="Integer">
 		SELECT COUNT(*) as likes
 		FROM liked_reviews
-		WHERE review_id = #{reviewId}
+		WHERE review_id =
+		#{reviewId}
 	</select>
+
+	<select id="findLikedReviewIdsByEmail"
+		resultType="com.ssafy.tripon.review.application.response.ReviewLiked">
+		SELECT review_id as reviewId
+		FROM liked_reviews
+		WHERE review_id IN
+		<foreach item="id" collection="reviewIds" open="("
+			separator="," close=")">
+			#{id}
+		</foreach>
+		AND email = #{email}
+	</select>
+
+
+	<select id="countAllByReviewIds"
+		resultType="com.ssafy.tripon.review.application.response.ReviewLikeCount">
+		SELECT review_id as reviewId, COUNT(*) AS cnt
+		FROM liked_reviews
+		WHERE review_id IN
+		<foreach item="id" collection="reviewIds" open="("
+			separator="," close=")">
+			#{id}
+		</foreach>
+		GROUP BY review_id
+	</select>
+
+
 
 	<delete id="delete" parameterType="map">
 		DELETE FROM liked_reviews
 		WHERE review_id = #{reviewId} AND email = #{email}
 	</delete>
 	
+	<delete id="deleteAllByReviewID" parameterType="Integer">
+		DELETE FROM liked_reviews
+		WHERE review_id = #{reviewId}
+	</delete>
+
+	<select id="existsMapByReviewIdsAndEmail" resultType="map">
+		SELECT review_id as reviewId, TRUE as liked
+		FROM liked_reviews
+		WHERE review_id IN
+		<foreach item="id" collection="reviewIds" open="("
+			separator="," close=")">
+			#{id}
+		</foreach>
+		AND email = #{email}
+	</select>
+
 	<select id="existsByReviewIdAndEmail" resultType="boolean">
 		SELECT EXISTS (
 		SELECT 1 FROM liked_reviews
-		WHERE review_id = #{reviewId} AND email = #{email}
+		WHERE review_id = #{reviewId} AND email =
+		#{email}
 		) as isLiked
 	</select>
+
 
 </mapper>

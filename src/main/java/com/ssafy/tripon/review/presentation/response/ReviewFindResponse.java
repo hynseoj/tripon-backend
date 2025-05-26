@@ -8,10 +8,12 @@ public record ReviewFindResponse(
         Integer id,
         String memberEmail,
         String memberName,
+        String ProfileImageUrl,
         String title,
         Integer likes,
         Boolean isLiked,
         List<Integer> details,
+        String thumbnailUrl,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
@@ -20,10 +22,12 @@ public record ReviewFindResponse(
                 response.id(),
                 response.memberEmail(),
                 response.memberName(),
+                response.profileImageUrl(),
                 response.title(),
                 response.likes(),
                 response.isLiked(),
                 response.details(),
+                response.thumbnailUrl(),
                 response.createdAt(),
                 response.updatedAt()
                 

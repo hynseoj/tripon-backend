@@ -32,24 +32,29 @@ public class CommentService {
 	public List<CommentServiceResponse> findAllByReviewId(Integer reviewId) {
 	    List<Comment> comments = commentRepository.findByReviewId(reviewId);
 	    if (comments.isEmpty()) {
-	        return List.of(); // 댓글 없으면 그대로 빈 응답 반환
+	        return List.of();
 	    }
-	    List<String> emails = comments.stream()
-	    	    .map(Comment::getMemberId)
-	    	    .distinct()
-	    	    .toList();
-	    Map<String, String> emailToNameMap = memberRepository.findAllByEmails(emails).stream()
-	    	    .collect(Collectors.toMap(Member::getEmail, Member::getName));
 
+	    List<String> emails = comments.stream()
+	        .map(Comment::getMemberId)
+	        .distinct()
+	        .toList();
+
+	    // 이름과 프사 모두 담은 Map으로 구성
+	    Map<String, Member> emailToMemberMap = memberRepository.findAllByEmails(emails).stream()
+	        .collect(Collectors.toMap(Member::getEmail, member -> member));
 
 	    return comments.stream()
-	    	    .map(comment -> {
-	    	        String name = emailToNameMap.get(comment.getMemberId());
-	    	        return CommentServiceResponse.from(comment, name);
-	    	    })
-	    	    .toList();
-
+	        .map(comment -> {
+	            Member member = emailToMemberMap.get(comment.getMemberId());
+	            String name = member != null ? member.getName() : null;
+	            String profileImageUrl = member != null ? member.getProfileImageUrl() : null;
+	            System.out.println(profileImageUrl);
+	            return CommentServiceResponse.from(comment, name, profileImageUrl);
+	        })
+	        .toList();
 	}
+
 
 
 	// 댓글 수정

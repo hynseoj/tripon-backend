@@ -1,6 +1,7 @@
 package com.ssafy.tripon.attraction.domain;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -44,5 +45,9 @@ public class Attraction {
 		this.siGunGuCode = siGunguCode;
 		this.latitude = latitude;
 		this.longitude = longitude;
+	}
+	
+	public Attraction(String title) {
+		this.title = title;
 	}
 }

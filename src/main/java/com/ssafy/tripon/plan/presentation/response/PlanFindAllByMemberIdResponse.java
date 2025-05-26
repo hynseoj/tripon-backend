@@ -7,6 +7,7 @@ import com.ssafy.tripon.plan.application.PlanServiceResponse;
 import lombok.Data;
 
 public record PlanFindAllByMemberIdResponse(
-		List<PlanServiceResponse> plans
-	) {	
-}
+	    List<PlanServiceResponse> plans,
+	    int totalItems
+	) {
+	}

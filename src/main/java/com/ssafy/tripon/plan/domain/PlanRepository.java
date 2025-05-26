@@ -3,6 +3,7 @@ package com.ssafy.tripon.plan.domain;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface PlanRepository {
@@ -21,5 +22,10 @@ public interface PlanRepository {
 
 	// 계획 삭제
 	int deletePlanById(Integer id);
+	
+	List<Plan> findPlansByMemberEmail(@Param("email") String email, @Param("offset") int offset, @Param("limit") int limit);
+
+	int countPlansByMemberEmail(@Param("email") String email);
+
 	
 }

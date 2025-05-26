@@ -1,28 +1,24 @@
 package com.ssafy.tripon.attraction.presentation.request;
 
 import com.ssafy.tripon.attraction.application.command.AttractionSaveCommand;
-
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.NotNull;
 
 public record AttractionSaveRequest (
 		@NotBlank
 		String title,
+
 		@NotBlank
-		@Positive
-		Integer areaCode,
-		@NotBlank
-		@Positive
-		Integer siGunGuCode,
-		@NotBlank
-		@Positive
+		String address,
+
+		@NotNull
 		Double latitude,
-		@NotBlank
-		@Positive
+
+		@NotNull
 		Double longitude
-	){
+){
 
 	public AttractionSaveCommand toCommand() {
-		return new AttractionSaveCommand(title, areaCode, siGunGuCode, latitude, longitude);
+		return new AttractionSaveCommand(title, address, latitude, longitude);
 	}
 }

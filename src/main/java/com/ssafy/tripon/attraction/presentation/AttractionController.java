@@ -33,9 +33,10 @@ public class AttractionController {
 	// 관광지 생성
 	@PostMapping
 	public ResponseEntity<Void> saveAttraction(@Valid @RequestBody AttractionSaveRequest request) {
-		Integer id = attractionService.saveAttraction(request.toCommand()) == null ? 0
-				: attractionService.saveAttraction(request.toCommand());
-		return ResponseEntity.created(URI.create("/api/v1/attractions/" + id)).build();
+		Integer id = attractionService.saveAttraction(request.toCommand());
+		return ResponseEntity.created(URI.create("/api/v1/attractions/" + id))
+				.header("Access-Control-Expose-Headers", "Location")
+				.build();
 	}
 
 	// 관광지 조회

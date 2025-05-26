@@ -17,14 +17,15 @@ public class CustomAttraction extends Attraction {
 	private Integer siGunGuCode;
 	private Double latitude;
 	private Double longitude;
+	private String firstImage1;
+	private String addr1;
+	private Integer contentTypeId;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
-	// @Todo: 이미지랑 주소 필드 추가 고려하기
 
-	public CustomAttraction(String title, Integer areaCode, Integer siGunguCode, Double latitude, Double longitude) {
+	public CustomAttraction(String title, String addr1, Double latitude, Double longitude) {
 		this.title = title;
-		this.areaCode = areaCode;
-		this.siGunGuCode = siGunguCode;
+		this.addr1 = addr1;
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}

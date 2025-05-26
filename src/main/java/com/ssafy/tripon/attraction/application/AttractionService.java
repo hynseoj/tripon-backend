@@ -27,10 +27,10 @@ public class AttractionService {
 	// 관광지 생성
 	public Integer saveAttraction(AttractionSaveCommand command) {
 		// attractions+custom_attractions에 있는지 확인
-		if (attractionRepository.findAttraction(command) != null) {
-			return attractionRepository.findAttraction(command);
+		Integer foundId = attractionRepository.findAttraction(command);
+		if (foundId != null) {
+			return -1;
 		}
-
 		CustomAttraction customAttraction = command.toCustomAttraction();
 		attractionRepository.saveCustomAttraction(customAttraction);
 		

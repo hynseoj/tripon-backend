@@ -46,12 +46,6 @@
 			<if test="title != null">
 				AND title = #{title}
 			</if>
-			<if test="areaCode != null">
-				AND area_code = #{areaCode}
-			</if>
-			<if test="siGunGuCode != null">
-				AND si_gun_gu_code = #{siGunGuCode}
-			</if>
 		</where>
 	</select>
 
@@ -59,8 +53,8 @@
 			parameterType="CustomAttraction"
 			useGeneratedKeys="true"
 			keyProperty="id">
-		INSERT INTO custom_attractions (title, area_code, si_gun_gu_code, latitude, longitude)
-		VALUES (#{title}, #{areaCode}, #{siGunGuCode}, #{latitude}, #{longitude})
+		INSERT INTO custom_attractions (title, addr1, latitude, longitude)
+		VALUES (#{title}, #{addr1}, #{latitude}, #{longitude})
 	</insert>
 
 	<select id="findAttractionById" parameterType="Integer" resultType="Attraction">

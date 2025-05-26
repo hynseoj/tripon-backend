@@ -1,7 +1,6 @@
 package com.ssafy.tripon.plandetail.application;
 
 import com.ssafy.tripon.attraction.application.AttractionService;
-import com.ssafy.tripon.attraction.application.command.AttractionSaveCommand;
 import com.ssafy.tripon.common.exception.CustomException;
 import com.ssafy.tripon.common.exception.ErrorCode;
 import com.ssafy.tripon.plandetail.application.command.PlanDetailSaveCommand;
@@ -54,9 +53,7 @@ public class PlanDetailService {
 		// attraction 삭제
 		planAttractionRepository.deletePlanAttractionByPlanDetailId(planDetailId);
 
-		for (AttractionSaveCommand attractionCommand : command.attractions()) {
-			// 없으면 생성
-			Integer attractionId = attractionService.saveAttraction(attractionCommand);
+		for (Integer attractionId : command.attractions()) {
 			planAttractionRepository.savePlanAttraction(new PlanAttraction(planDetailId, attractionId));
 		}
 	}

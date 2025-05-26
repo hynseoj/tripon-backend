@@ -49,9 +49,8 @@
 		a.addr1
 		FROM plandetails d
 		JOIN plan_attractions pa ON d.id = pa.plandetail_id
-		JOIN (
-		SELECT id, title, area_code, si_gun_gu_code, latitude, longitude, first_image1, addr1 FROM unified_attractions_view
-		) a ON pa.attraction_id = a.id
+		JOIN materialized_union_attractions a
+		ON pa.attraction_id = a.id
 		where d.id = #{planDetailId}
 	</select>
 	

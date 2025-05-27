@@ -33,7 +33,7 @@ public class AttractionService {
 		}
 		CustomAttraction customAttraction = command.toCustomAttraction();
 		attractionRepository.saveCustomAttraction(customAttraction);
-		
+
 		// 없으면 save
 		return customAttraction.getId();
 	}
@@ -69,4 +69,17 @@ public class AttractionService {
 		List<ContentType> types = contentTypeRepository.findAllContentType();
 		return types.stream().map(ContentTypeResponse::from).toList();
 	}
+
+	public Attraction findOrRegisterByName(AttractionSaveCommand command) {
+		Attraction attraction = attractionRepository.findUniqueAttraction(command);
+
+		// 2. 이미 존재하면 DB에서 전체 정보 조회 후 반환
+		if (attraction != null) {
+			return attraction;
+		}
+
+		// 3. 존재하지 않으면 나중에 저장
+		return new Attraction(command.title());
+	}
+
 }

@@ -12,4 +12,8 @@ public record ReviewSaveCommand(
     public Review toReview(String thumbnailOriginal, String thumbnailUrl) {
         return new Review(email, title, thumbnailOriginal, thumbnailUrl);
     }
+    
+    public Review toReview() {
+        return new Review(email, title);
+    }
 }

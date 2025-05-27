@@ -7,6 +7,7 @@ import com.ssafy.tripon.plan.application.command.PlanUpdateCommand;
 import com.ssafy.tripon.plan.domain.Plan;
 import com.ssafy.tripon.plan.domain.PlanRepository;
 import com.ssafy.tripon.plandetail.domain.PlanAttractionRepository;
+import com.ssafy.tripon.plan.presentation.response.PlanFindAllByMemberIdResponse;
 import com.ssafy.tripon.plandetail.domain.PlanDetailRepository;
 import java.util.List;
 import java.util.Optional;
@@ -32,6 +33,20 @@ public class PlanService {
 	public List<PlanServiceResponse> findAllPlanByMemberId(String memberId) {
 		return planRepository.findAllPlanByMemberId(memberId).stream().map(PlanServiceResponse::from).toList();
 	}
+	
+	public PlanFindAllByMemberIdResponse findPlans(String email, int page, int size) {
+	    int offset = (page - 1) * size;
+
+	    List<Plan> plans = planRepository.findPlansByMemberEmail(email, offset, size);
+	    int totalItems = planRepository.countPlansByMemberEmail(email);
+
+	    List<PlanServiceResponse> responseList = plans.stream()
+	        .map(PlanServiceResponse::from)
+	        .toList();
+
+	    return new PlanFindAllByMemberIdResponse(responseList, totalItems);
+	}
+
 
 	public PlanServiceResponse findPlanById(int id) {
 		Plan plan = Optional.ofNullable(planRepository.findPlanById(id))

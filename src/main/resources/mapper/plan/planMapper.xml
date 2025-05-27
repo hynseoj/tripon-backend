@@ -7,28 +7,51 @@
 		insert into plans (email, title, start_date, end_date, memo)
 		values (#{email}, #{title}, #{startDate}, #{endDate}, #{memo})
 	</insert>
-	
-	<select id="findAllPlanByMemberId" parameterType="String" resultType="Plan">
-		select id, title, start_date as startDate, end_date as endDate, memo, created_at as createdAt, updated_at as updatedAt
-		from plans
+
+	<select id="findAllPlanByMemberId" parameterType="String"
+		resultType="Plan">
+		select id, title, start_date as startDate, end_date as
+		endDate, memo, created_at as createdAt, updated_at as updatedAt
+		from
+		plans
 		where email = #{memberId}
 	</select>
-	
-	<select id="findPlanById" parameterType="Integer" resultType="Plan">
-		select id, title, start_date as startDate, end_date as endDate, memo, created_at as createdAt, updated_at as updatedAt
+
+	<select id="findPlanById" parameterType="Integer"
+		resultType="Plan">
+		select id, title, start_date as startDate, end_date as endDate,
+		memo, created_at as createdAt, updated_at as updatedAt
 		from plans
-		where id = #{id}
+		where
+		id = #{id}
 	</select>
-	
+
+	<!-- 전체 개수 -->
+	<select id="countPlansByMemberEmail" resultType="int">
+		SELECT COUNT(*) FROM plans WHERE email = #{email}
+	</select>
+
+	<!-- 페이징된 계획 리스트 -->
+	<select id="findPlansByMemberEmail" resultType="Plan">
+		select id, title, start_date as startDate, end_date as endDate,
+		memo, created_at as createdAt, updated_at as updatedAt
+		from plans
+		WHERE email = #{email}
+		ORDER BY updated_at DESC
+		LIMIT #{limit} OFFSET #{offset}
+	</select>
+
+
 	<update id="updatePlan" parameterType="Plan">
 		update plans
-		set title = #{title}, 
-			start_date = #{startDate},
-            end_date = #{endDate},
-            memo = #{memo}
-        where id = #{id}
+		set title =
+		#{title},
+		start_date = #{startDate},
+		end_date = #{endDate},
+		memo = #{memo}
+		where id = #{id}
 	</update>
-	
+
 	<delete id="deletePlanById" parameterType="Integer">
         delete from plans
         where id = #{id}
@@ -52,5 +75,5 @@
 		WHERE id      = #{id}
 		AND version = #{version}
 	</update>
-    
+
 </mapper>

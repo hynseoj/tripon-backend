@@ -48,6 +48,28 @@
 			</if>
 		</where>
 	</select>
+	
+	<select id="findUniqueAttraction"
+			parameterType="com.ssafy.tripon.attraction.application.command.AttractionSaveCommand"
+			resultType="Attraction">
+		SELECT id AS no,
+			   title,
+			   area_code AS areaCode,
+			   si_gun_gu_code AS siGunGuCode,
+			   latitude,
+			   longitude,
+			   first_image1 AS FirstImage1,
+			   addr1
+		FROM materialized_union_attractions
+		<where>
+			<if test="title != null">
+				AND title = #{title}
+			</if>
+			<if test="address != null">
+				AND addr1 = #{address}
+			</if>
+		</where>
+	</select>
 
 	<insert id="saveCustomAttraction"
 			parameterType="CustomAttraction"

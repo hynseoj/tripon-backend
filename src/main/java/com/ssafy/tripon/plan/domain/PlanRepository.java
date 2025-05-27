@@ -22,6 +22,12 @@ public interface PlanRepository {
 	// 계획 삭제
 	int deletePlanById(Integer id);
 
+	List<Plan> findPlansByMemberEmail(@Param("email") String email, @Param("offset") int offset, @Param("limit") int limit);
+
+	int countPlansByMemberEmail(@Param("email") String email);
+
+
+
 
 
 	/** 현재 버전 조회 */

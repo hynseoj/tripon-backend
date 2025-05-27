@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.tripon.plan.domain.PlanEventRepository">
+    <insert id="insertEvent"
+            parameterType="com.ssafy.tripon.plan.domain.PlanEvent"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO plan_events
+        (plan_id, email, event_type, payload)
+        VALUES
+        (#{planId}, #{email}, #{eventType}, #{payload})
+    </insert>
+</mapper>

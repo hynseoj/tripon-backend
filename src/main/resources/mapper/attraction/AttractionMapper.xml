@@ -82,7 +82,7 @@
 	</insert>
 
 	<select id="findAttractionById" parameterType="Integer" resultType="Attraction">
-		SELECT id as no, title, area_code as areaCode, si_gun_gu_code as siGunGuCode, latitude, longitude
+		SELECT id as no, title, first_image1 as FirstImage1, addr1, area_code as areaCode, si_gun_gu_code as siGunGuCode, latitude, longitude
 		FROM materialized_union_attractions
 		WHERE id = #{id}
 	</select>

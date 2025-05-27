@@ -7,6 +7,13 @@ public interface PlanAttractionRepository {
 	
 	// 생성
 	void savePlanAttraction(PlanAttraction planAttraction);
+	// 개수 조회
+	int countPlanAttractionByPlanDetailId(Integer planDetailId);
 	// 삭제
 	void deletePlanAttractionByPlanDetailId(Integer planDetailId);
+
+	void deletePlanAttractionByPlanDetailIdAndAttractionId(Integer planDetailId, Integer attractionId);
+	
+	// 조회
+	PlanAttraction findPlanAttraction(Integer planDetailId, Integer attractionId) ;
 }

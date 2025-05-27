@@ -435,6 +435,10 @@ SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
+insert into members (email, name, password, role) values ('admin@ssafy.com', 'admin', '1234', 'ADMIN');
+insert into plans (email, title, start_date, end_date, memo) 
+values ('admin@ssafy.com', 'admin', '2025-04-01', '2025-04-04', '첫번째 계획!');
+
 select * from plans;
 
 ALTER TABLE members
@@ -442,6 +446,9 @@ ALTER TABLE members
 
 ALTER TABLE comments MODIFY parent_id INT NULL;
 
+ALTER TABLE reviews
+ADD COLUMN thumbnail_original VARCHAR(500) NULL DEFAULT NULL,
+ADD COLUMN thumbnail_url VARCHAR(500) NULL DEFAULT NULL;
 
 CREATE TABLE IF NOT EXISTS materialized_union_attractions (
   id               INT             NOT NULL,
@@ -584,11 +591,26 @@ END$$
 
 DELIMITER ;
 
+-- 도전...!!
+ALTER TABLE tripon.plans
+  ADD COLUMN version BIGINT NOT NULL DEFAULT 0;
+
 insert into members (email, name, password, role) values ('admin@ssafy.com', 'admin', '1234', 'ADMIN');
-insert into plans (email, title, start_date, end_date, memo) 
+insert into plans (email, title, start_date, end_date, memo)
 values ('admin@ssafy.com', 'admin', '2025-04-01', '2025-04-04', '첫번째 계획!');
 
 select * from plans;
+
+CREATE TABLE tripon.plan_events (
+  id         BIGINT      NOT NULL AUTO_INCREMENT,
+  plan_id    INT         NOT NULL,
+  email      VARCHAR(50) NOT NULL,
+  event_type VARCHAR(50) NOT NULL,
+  payload    JSON        NOT NULL,
+  created_at DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY(id),
+  INDEX idx_plan (plan_id)
+);
 
 ALTER TABLE members
   MODIFY COLUMN password VARCHAR(255) NOT NULL;

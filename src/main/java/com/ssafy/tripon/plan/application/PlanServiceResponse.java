@@ -12,6 +12,7 @@ public record PlanServiceResponse(
 		LocalDate startDate,
 		LocalDate endDate,
 		String memo,
+		Long version,
 		List<Integer> details,
 		LocalDateTime createdAt,
 		LocalDateTime updatedAt
@@ -24,6 +25,7 @@ public record PlanServiceResponse(
 				plan.getStartDate(),
 				plan.getEndDate(),
 				plan.getMemo(),
+				plan.getVersion(),
 				details,
 				plan.getCreatedAt(),
 				plan.getUpdatedAt()
@@ -37,6 +39,7 @@ public record PlanServiceResponse(
 				plan.getStartDate(),
 				plan.getEndDate(),
 				plan.getMemo(),
+				plan.getVersion(),
 				Collections.emptyList(),
 				plan.getCreatedAt(),
 				plan.getUpdatedAt()

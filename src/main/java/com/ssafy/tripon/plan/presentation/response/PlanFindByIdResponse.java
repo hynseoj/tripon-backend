@@ -11,6 +11,7 @@ public record PlanFindByIdResponse(
 		LocalDate startDate,
 		LocalDate endDate,
 		String memo,
+		Long version,
 		List<Integer> details,
 		LocalDateTime createdAt,
 		LocalDateTime updatedAt
@@ -22,6 +23,7 @@ public record PlanFindByIdResponse(
 				response.startDate(),
 				response.endDate(),
 				response.memo(),
+				response.version(),
 				response.details(),
 				response.createdAt(),
 				response.updatedAt()

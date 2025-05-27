@@ -2,7 +2,6 @@ package com.ssafy.tripon.plan.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,6 +17,7 @@ public class Plan {
 	private LocalDate startDate;
 	private LocalDate endDate;
 	private String memo;
+	private Long version;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 	

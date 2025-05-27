@@ -19,7 +19,7 @@
 
 	<select id="findPlanById" parameterType="Integer"
 		resultType="Plan">
-		select id, title, start_date as startDate, end_date as endDate,
+		select id, email, title, start_date as startDate, end_date as endDate,
 		memo, created_at as createdAt, updated_at as updatedAt
 		from plans
 		where

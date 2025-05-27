@@ -6,8 +6,8 @@ import com.ssafy.tripon.plan.application.command.PlanSaveCommand;
 import com.ssafy.tripon.plan.application.command.PlanUpdateCommand;
 import com.ssafy.tripon.plan.domain.Plan;
 import com.ssafy.tripon.plan.domain.PlanRepository;
-import com.ssafy.tripon.plandetail.domain.PlanAttractionRepository;
 import com.ssafy.tripon.plan.presentation.response.PlanFindAllByMemberIdResponse;
+import com.ssafy.tripon.plandetail.domain.PlanAttractionRepository;
 import com.ssafy.tripon.plandetail.domain.PlanDetailRepository;
 import java.util.List;
 import java.util.Optional;
@@ -76,4 +76,10 @@ public class PlanService {
 		}
 	}
 
+	public boolean isOwner(Integer planId, String memberEmail) {
+		Plan plan = Optional.ofNullable(planRepository.findPlanById(planId))
+				.orElseThrow(() -> (new CustomException(ErrorCode.PLANS_NOT_FOUND)));
+
+		return plan.getEmail().equals(memberEmail);
+	}
 }

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.tripon.plan.domain.PlanShareLinkRepository">
+
+    <!-- 공유 링크 저장 -->
+    <insert id="savePlanLink" parameterType="PlanShareLink" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO plan_share_links (plan_id, token)
+        VALUES (#{planId}, #{token})
+    </insert>
+
+    <!-- planId와 token으로 링크 조회 -->
+    <select id="findLinkByPlanIdAndToken" resultType="PlanShareLink">
+        SELECT
+        id,
+        plan_id AS planId,
+        token,
+        created_at AS createdAt,
+        expires_at AS expiresAt
+        FROM plan_share_links
+        WHERE plan_id = #{planId}
+        AND token = #{token}
+    </select>
+
+    <!-- token으로 링크 조회 -->
+    <select id="findLinkByToken" resultType="PlanShareLink">
+        SELECT
+        id,
+        plan_id AS planId,
+        token,
+        created_at AS createdAt,
+        expires_at AS expiresAt
+        FROM plan_share_links
+        WHERE token = #{token}
+    </select>
+
+</mapper>

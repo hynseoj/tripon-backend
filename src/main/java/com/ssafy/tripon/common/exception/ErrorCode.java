@@ -24,6 +24,7 @@ public enum ErrorCode {
     NOTICES_NOT_FOUND(404, "공지사항을 찾을 수 없습니다."),
     PLANS_NOT_FOUND(404, "여행 계획을 찾을 수 없습니다."),
     PLANDETAILS_NOT_FOUND(404, "여행 세부 계획을 찾을 수 없습니다."),
+    PLAN_SHARE_LINK_NOT_FOUND(404, "해당 공유 링크를 찾을 수 없습니다."),
     REVIEWS_NOT_FOUND(404, "여행 후기를 찾을 수 없습니다."),
     REVIEWDETAILS_NOT_FOUND(404, "여행 세부 후기를 찾을 수 없습니다."),
 

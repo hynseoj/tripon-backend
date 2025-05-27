@@ -620,3 +620,14 @@ ALTER TABLE reviews
 ADD COLUMN thumbnail_original VARCHAR(500) NULL DEFAULT NULL,
 ADD COLUMN thumbnail_url VARCHAR(500) NULL DEFAULT NULL;
 
+CREATE TABLE plan_share_links (
+  id          BIGINT      NOT NULL AUTO_INCREMENT,
+  plan_id     INT         NOT NULL,
+  token       CHAR(36)    NOT NULL UNIQUE COMMENT 'UUID 토큰',
+  created_at  DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  expires_at  DATETIME    NULL,
+  PRIMARY KEY(id),
+  INDEX idx_plan (plan_id),
+  CONSTRAINT fk_share_plan FOREIGN KEY(plan_id) REFERENCES plans(id)
+);
+

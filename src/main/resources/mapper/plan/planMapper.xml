@@ -4,7 +4,7 @@
 
 <mapper namespace="com.ssafy.tripon.plan.domain.PlanRepository">
 	<insert id="savePlan" useGeneratedKeys="true" keyProperty="id">
-		insert into plans (email, title, start_date, end_date, memo) 
+		insert into plans (email, title, start_date, end_date, memo)
 		values (#{email}, #{title}, #{startDate}, #{endDate}, #{memo})
 	</insert>
 	
@@ -15,7 +15,7 @@
 	</select>
 	
 	<select id="findPlanById" parameterType="Integer" resultType="Plan">
-		select title, start_date as startDate, end_date as endDate, memo, created_at as createdAt, updated_at as updatedAt
+		select id, title, start_date as startDate, end_date as endDate, memo, created_at as createdAt, updated_at as updatedAt
 		from plans
 		where id = #{id}
 	</select>
@@ -33,5 +33,24 @@
         delete from plans
         where id = #{id}
     </delete>
+
+	<!-- 1) 버전 조회 -->
+	<select id="selectVersion"
+			parameterType="Integer"
+			resultType="long">
+		SELECT version
+		FROM plans
+		WHERE id = #{id}
+	</select>
+
+	<!-- 2) 제목+메모 업데이트 (Optimistic Lock) -->
+	<update id="updateTitleAndMemoWithVersion" parameterType="map">
+		UPDATE plans
+		SET title   = #{title},
+		memo    = #{memo},
+		version = version + 1
+		WHERE id      = #{id}
+		AND version = #{version}
+	</update>
     
 </mapper>

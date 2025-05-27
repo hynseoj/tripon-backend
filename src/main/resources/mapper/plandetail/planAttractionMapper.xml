@@ -4,7 +4,8 @@
 
 <mapper namespace="com.ssafy.tripon.plandetail.domain.PlanAttractionRepository">
 	
-	<insert id="savePlanAttraction" parameterType="PlanAttraction">
+	<insert id="savePlanAttraction" parameterType="PlanAttraction" useGeneratedKeys="true"
+			keyProperty="id">
 		insert into plan_attractions (plandetail_id, attraction_id)
 		value(#{planDetailId}, #{attractionId})
 	</insert>
@@ -12,6 +13,18 @@
 	<delete id="deletePlanAttractionByPlanDetailId" parameterType="Integer">
 		delete from plan_attractions
 		where plandetail_id = #{planDetailId}
+	</delete>
+
+	<select id="countPlanAttractionByPlanDetailId" parameterType="Integer" resultType="Integer">
+		select count(*)
+		from plan_attractions
+		where plandetail_id = #{planDetailId}
+	</select>
+
+	<delete id="deletePlanAttractionByPlanDetailIdAndAttractionId" parameterType="map">
+		DELETE FROM plan_attractions
+		WHERE plandetail_id = #{planDetailId}
+		AND attraction_id = #{attractionId}
 	</delete>
 	
 </mapper>

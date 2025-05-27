@@ -590,5 +590,18 @@ END$$
 
 DELIMITER ;
 
+-- 도전...!!
+ALTER TABLE tripon.plans
+  ADD COLUMN version BIGINT NOT NULL DEFAULT 0;
 
+CREATE TABLE tripon.plan_events (
+  id         BIGINT      NOT NULL AUTO_INCREMENT,
+  plan_id    INT         NOT NULL,
+  email      VARCHAR(50) NOT NULL,
+  event_type VARCHAR(50) NOT NULL,
+  payload    JSON        NOT NULL,
+  created_at DATETIME    NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY(id),
+  INDEX idx_plan (plan_id)
+);
 

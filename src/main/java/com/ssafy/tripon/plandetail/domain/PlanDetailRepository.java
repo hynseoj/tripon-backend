@@ -17,4 +17,6 @@ public interface PlanDetailRepository {
 	int deletePlanDetail(Integer id);
 
 	List<Integer> findAllByPlanId(Integer planId);
+
+	PlanDetail findByPlanIdAndDay(Integer planId, int day);
 }

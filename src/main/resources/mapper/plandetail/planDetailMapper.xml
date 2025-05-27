@@ -64,4 +64,18 @@
 		FROM plandetails
 		WHERE plan_id = #{planId}
 	</select>
+
+	<select id="findByPlanIdAndDay"
+			parameterType="map"
+			resultType="PlanDetail">
+		SELECT
+		id,
+		plan_id    AS planId,
+		day        AS day,
+		created_at AS createdAt,
+		updated_at AS updatedAt
+		FROM plandetails
+		WHERE plan_id = #{planId}
+		AND day = #{day}
+	</select>
 </mapper>

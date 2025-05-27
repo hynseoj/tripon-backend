@@ -97,31 +97,22 @@
 	</delete>
 
 	<select id="findTop4ByLikeInLastMonth" resultType="Review">
-		SELECT id,
-		member_email as memberEmail, title, created_at as createdAt,
-		updated_at as updatedAt, thumbnail_original as thumbnailOriginal,
-		thumbnail_url as
-		thumbnailUrl
+		SELECT r.id,
+		r.member_email AS memberEmail,
+		r.title,
+		r.created_at AS createdAt,
+		r.updated_at AS updatedAt,
+		r.thumbnail_original AS thumbnailOriginal,
+		r.thumbnail_url AS thumbnailUrl,
+		COUNT(l.id) AS likeCount
 		FROM reviews r
-		JOIN (
-		SELECT review_id,
-		COUNT(*)
-		AS like_count
-		FROM liked_reviews
-		WHERE created_at >=
-		DATE_SUB(NOW(),
-		INTERVAL 1 MONTH)
-		GROUP BY review_id
-		ORDER BY like_count
-		DESC
+		LEFT JOIN liked_reviews l ON r.id = l.review_id
+		WHERE r.created_at >= DATE_SUB(NOW(), INTERVAL 1 MONTH)
+		GROUP BY r.id
+		ORDER BY likeCount DESC
 		LIMIT 4
-		) AS
-		top_liked
-		ON r.id = top_liked.review_id
-		ORDER BY
-		top_liked.like_count
-		DESC
 	</select>
+
 
 	<select id="findPagedSorted" resultType="Review">
 		SELECT id, member_email as

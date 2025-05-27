@@ -6,7 +6,7 @@ import java.util.List;
 public record PlanDetailSaveCommand(
 		Integer planId,
 		Integer day,
-		List<Integer> attractions
+		List<PlanAttractionCommand> attractions
 		) {
 
 	public PlanDetail toPlanDetail() {

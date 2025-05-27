@@ -8,7 +8,8 @@ public record ReviewUpdateCommand(
         Integer id,
         String email,
         String title,
-        MultipartFile thumbnail
+        MultipartFile thumbnail,
+        String thumbnailUrl
 ) {
     public Review toReview(String thumbnailUrl) {
     	System.out.println("thumbnailUrl이다" + thumbnailUrl);

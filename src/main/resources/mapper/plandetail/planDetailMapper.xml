@@ -17,6 +17,7 @@
 			javaType="java.util.ArrayList">
 			<result property="id" column="attraction_id" />
 			<result property="title" column="title" />
+			<result property="orderNumber" column="order_number" />
 			<result property="areaCode" column="area_code" />
 			<result property="siGunGuCode" column="si_gun_gu_code" />
 			<result property="latitude" column="latitude" />
@@ -41,6 +42,7 @@
 		d.day,
 		a.id AS attraction_id,
 		a.title,
+		pa.order_number,
 		a.area_code,
 		a.si_gun_gu_code,
 		a.latitude,
@@ -52,7 +54,7 @@
 		JOIN materialized_union_attractions a
 		ON pa.attraction_id = a.id
 		where d.id = #{planDetailId}
-		order by a.id
+		order by pa.order_number
 	</select>
 	
 	<delete id="deletePlanDetail">

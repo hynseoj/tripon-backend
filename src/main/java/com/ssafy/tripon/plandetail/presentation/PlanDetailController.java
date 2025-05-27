@@ -29,6 +29,7 @@ public class PlanDetailController {
 	
 	@PostMapping
 	public ResponseEntity<Void> savePlanDetail(@PathVariable Integer planId, @Valid @RequestBody PlanDetailSaveRequest request) {
+		System.out.println(request);
 		Integer id = planDetailService.savePlanDetail(request.toCommand(planId));
 		return ResponseEntity.created(URI.create("/api/v1/plans/" + planId + "/" + id)).build();
 	}

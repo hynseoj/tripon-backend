@@ -10,7 +10,7 @@ public record ReviewUpdateRequest(
 		@NotBlank(message = "제목을 입력해주세요.")
         String title
 ) {
-    public ReviewUpdateCommand toCommand(Integer id, String email, MultipartFile thumbnail) {
-        return new ReviewUpdateCommand(id, email, title, thumbnail);
+    public ReviewUpdateCommand toCommand(Integer id, String email, MultipartFile thumbnail, String thumbnailUrl) {
+        return new ReviewUpdateCommand(id, email, title, thumbnail, thumbnailUrl);
     }
 }

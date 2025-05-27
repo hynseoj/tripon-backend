@@ -42,7 +42,6 @@ public class AttractionService {
 	public AttractionCursorPage findAllAttractions(AttractionFindCommand command) {
 		// 각 테이블에서 엔티티 목록 조회
 		List<Attraction> attractions = attractionRepository.findAllAttraction(command);
-
 		boolean hasNext = attractions.size() > command.size() - 1;
 		Integer nextCursor = null;
 
@@ -71,11 +70,12 @@ public class AttractionService {
 	}
 
 	public Attraction findOrRegisterByName(AttractionSaveCommand command) {
-		Attraction attraction = attractionRepository.findUniqueAttraction(command);
+		List<Attraction> attractions = attractionRepository.findUniqueAttraction(command);
 
 		// 2. 이미 존재하면 DB에서 전체 정보 조회 후 반환
-		if (attraction != null) {
-			return attraction;
+		if (attractions != null && !attractions.isEmpty()) {
+			System.out.println(attractions.size() +  " " + attractions.get(0).getTitle());
+			return attractions.get(0);
 		}
 
 		// 3. 존재하지 않으면 나중에 저장

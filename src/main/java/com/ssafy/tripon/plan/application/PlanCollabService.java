@@ -16,6 +16,7 @@ import com.ssafy.tripon.plan.domain.PlanRepository;
 import com.ssafy.tripon.plandetail.domain.PlanAttraction;
 import com.ssafy.tripon.plandetail.domain.PlanAttractionRepository;
 import com.ssafy.tripon.plandetail.domain.PlanDetailRepository;
+import com.ssafy.tripon.plandetail.domain.PlanDetail;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,15 +30,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class PlanCollabService {
 
-    private final PlanRepository planRepository;
-    private final PlanDetailRepository planDetailRepository;
-    private final PlanAttractionRepository planAttractionRepository;
-    private final PlanEventRepository planEventRepository;
-    private final AttractionRepository attractionRepository;
+	private final PlanRepository planRepository;
+	private final PlanDetailRepository planDetailRepository;
+	private final PlanAttractionRepository planAttractionRepository;
+	private final PlanEventRepository planEventRepository;
+	private final AttractionRepository attractionRepository;
 
-    private final ObjectMapper objectMapper;
+	private final ObjectMapper objectMapper;
 
-    public PlanUpdateBroadcast applyEvent(PlanEditMessage message) throws JsonProcessingException {
+	public PlanUpdateBroadcast applyEvent(PlanEditMessage message) throws JsonProcessingException {
         // 이벤트 저장
         PlanEvent planEvent = new PlanEvent(message.planId(), message.email(), message.eventType(), message.payload());
         planEventRepository.insertEvent(planEvent);
@@ -84,10 +85,9 @@ public class PlanCollabService {
                 int attractionId = Integer.parseInt(payload.get("attractionId").toString());
 
                 System.out.println(plan.getId());
-                int planDetailId = planDetailRepository.findByPlanIdAndDay(plan.getId(), day).getId();
-                int position = planAttractionRepository.countPlanAttractionByPlanDetailId(planDetailId) + 1;
-
-                PlanAttraction planAttraction = new PlanAttraction(planDetailId, attractionId);
+                PlanDetail planDetail = planDetailRepository.findByPlanIdAndDay(plan.getId(), day);
+                PlanAttraction planAttraction=planAttractionRepository.findPlanAttraction(planDetail.getId(), attractionId);
+                
                 planAttractionRepository.savePlanAttraction(planAttraction);
                 int generatedId = planAttraction.getId();
                 updated++;
@@ -124,7 +124,7 @@ public class PlanCollabService {
             }
             case "REORDER_ATTRACTIONS": {
                 int day = Integer.parseInt(payload.get("day").toString());
-                List<Integer> attractionIds = ((List<?>) payload.get("attractionIds"))
+                List<Integer> attractionIds = ((List<?>) payload.get("attractions"))
                         .stream()
                         .map(o -> Integer.parseInt(o.toString()))
                         .toList();
@@ -136,11 +136,12 @@ public class PlanCollabService {
                 planAttractionRepository.deletePlanAttractionByPlanDetailId(planDetailId);
 
                 int count = 0;
-                for (Integer attractionId : attractionIds) {
-                    PlanAttraction pa = new PlanAttraction(planDetailId, attractionId);
+                for(int i = 0; i < attractionIds.size(); i++) {
+                	PlanAttraction pa = new PlanAttraction(planDetailId, attractionIds.get(i), i);
                     planAttractionRepository.savePlanAttraction(pa);
                     count++;
                 }
+
                 updated = count;
                 break;
             }

@@ -30,7 +30,7 @@
 				AND content_type_id = #{type}
 			</if>
 			<if test="cursor != null">
-				AND id &gt; #{cursor}
+				AND id > #{cursor}
 			</if>
 		</where>
 		ORDER BY no ASC
@@ -47,6 +47,7 @@
 				AND title = #{title}
 			</if>
 		</where>
+		limit 1
 	</select>
 	
 	<select id="findUniqueAttraction"
@@ -69,6 +70,7 @@
 				AND addr1 = #{address}
 			</if>
 		</where>
+		limit 1
 	</select>
 
 	<insert id="saveCustomAttraction"

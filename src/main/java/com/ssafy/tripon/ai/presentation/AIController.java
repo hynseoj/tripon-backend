@@ -22,6 +22,7 @@ public class AIController {
 	@PostMapping("/planCreate")
 	public ResponseEntity<AIPlanResponse> createPlan(@RequestBody AIPlanRequest request) {
 		AIPlanResponse plan = aiChatService.createPlan(request);
+		System.out.println(plan);
 		return ResponseEntity.ok(plan);
 	}
 

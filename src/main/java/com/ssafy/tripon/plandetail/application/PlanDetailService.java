@@ -1,8 +1,10 @@
 package com.ssafy.tripon.plandetail.application;
 
 import com.ssafy.tripon.attraction.application.AttractionService;
+import com.ssafy.tripon.attraction.presentation.AttractionController;
 import com.ssafy.tripon.common.exception.CustomException;
 import com.ssafy.tripon.common.exception.ErrorCode;
+import com.ssafy.tripon.plandetail.application.command.PlanAttractionCommand;
 import com.ssafy.tripon.plandetail.application.command.PlanDetailSaveCommand;
 import com.ssafy.tripon.plandetail.application.command.PlanDetailUpdateCommand;
 import com.ssafy.tripon.plandetail.domain.PlanAttraction;
@@ -19,6 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class PlanDetailService {
 
+    private final AttractionController attractionController;
+
 	private final PlanDetailRepository planDetailRepository;
 	private final PlanAttractionRepository planAttractionRepository;
 	private final AttractionService attractionService;
@@ -29,8 +33,8 @@ public class PlanDetailService {
 		planDetailRepository.savePlanDetail(planDetail);
 		Integer planDetailId = planDetail.getId();
 
-		for (Integer attractionId : command.attractions()) {
-			planAttractionRepository.savePlanAttraction(new PlanAttraction(planDetailId, attractionId));
+		for (PlanAttractionCommand attraction : command.attractions()) {
+			planAttractionRepository.savePlanAttraction(new PlanAttraction(planDetailId, attraction.id(), attraction.orderNumber()));
 		}
 
 		return planDetailId;
@@ -53,8 +57,8 @@ public class PlanDetailService {
 		// attraction 삭제
 		planAttractionRepository.deletePlanAttractionByPlanDetailId(planDetailId);
 
-		for (Integer attractionId : command.attractions()) {
-			planAttractionRepository.savePlanAttraction(new PlanAttraction(planDetailId, attractionId));
+		for (PlanAttractionCommand attraction : command.attractions()) {
+			planAttractionRepository.savePlanAttraction(new PlanAttraction(planDetailId, attraction.id(), attraction.orderNumber()));
 		}
 	}
 

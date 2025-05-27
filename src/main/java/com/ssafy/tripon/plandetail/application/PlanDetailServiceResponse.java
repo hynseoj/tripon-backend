@@ -19,6 +19,7 @@ public class PlanDetailServiceResponse {
 	public static class PlanAttractionServiceResponse {
 		private Integer id;
 		private String title;
+		private Integer orderNumber;
 		private Integer areaCode;
 		private Integer siGunGuCode;
 		private Double latitude;

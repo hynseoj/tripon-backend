@@ -14,9 +14,9 @@ public record PlanDetailSaveRequest(
 		@Valid
 		@NotNull
 		@NotEmpty(message = "관광지를 1개 이상 선택해주세요.")
-		List<Integer> attractions
+		List<PlanAttractionRequest> attractions
 ) {
 	public PlanDetailSaveCommand toCommand(Integer planId) {
-		return new PlanDetailSaveCommand(planId, day, attractions);
+		return new PlanDetailSaveCommand(planId, day, attractions.stream().map(t -> t.toCommand()).toList());
 	}
 }

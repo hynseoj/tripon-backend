@@ -50,7 +50,9 @@ public class AttractionController {
 			@RequestParam(defaultValue = "20") int size
 	) {
 		AttractionFindCommand command = new AttractionFindCommand(areaCode, siGunGuCode, type, keyword, cursor, size + 1);
+		System.out.println(command);
 		AttractionCursorPage response = attractionService.findAllAttractions(command);
+		System.out.println(response);
 		return ResponseEntity.ok(AttractionCursorPageResponse.from(response));
 	}
 

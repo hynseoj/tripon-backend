@@ -4,10 +4,10 @@
 
 <mapper namespace="com.ssafy.tripon.plandetail.domain.PlanAttractionRepository">
 	
-	<insert id="savePlanAttraction" parameterType="PlanAttraction" useGeneratedKeys="true"
-			keyProperty="id">
-		insert into plan_attractions (plandetail_id, attraction_id)
-		value(#{planDetailId}, #{attractionId})
+
+	<insert id="savePlanAttraction" parameterType="PlanAttraction">
+		insert into plan_attractions (plandetail_id, attraction_id, order_number)
+		value(#{planDetailId}, #{attractionId}, #{orderNumber})
 	</insert>
 	
 	<delete id="deletePlanAttractionByPlanDetailId" parameterType="Integer">
@@ -27,4 +27,10 @@
 		AND attraction_id = #{attractionId}
 	</delete>
 	
+	<select id="findPlanAttraction" parameterType="Integer" resultType="PlanAttraction">
+		select plandetail_id, attraction_id, order_number
+		from plan_attractions
+		WHERE plandetail_id = #{planDetailId}
+		AND attraction_id = #{attractionId}
+	</select>
 </mapper>

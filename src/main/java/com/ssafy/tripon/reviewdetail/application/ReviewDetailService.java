@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -70,6 +71,7 @@ public class ReviewDetailService {
 		for (ReviewAttraction reviewAttraction : reviewAttractions) {
 			attractions.add(attractionRepository.findAttractionById(reviewAttraction.getAttractionId()));
 		}
+
 		// reviewdetails-pictures
 		List<ReviewPicture> reviewPictures = reviewPictureRepository.findAllByReviewDetailId(id);
 		List<String> pictures = new ArrayList<>();
@@ -80,8 +82,8 @@ public class ReviewDetailService {
 		return ReviewDetailServiceResponse.from(reviewDetail, attractions, pictures);
 	}
 
-	public ReviewDetailServiceResponse updateReviewDetail(ReviewDetailUpdateCommand command,
-			List<MultipartFile> images, List<String> pictureUrls ) {
+	public ReviewDetailServiceResponse updateReviewDetail(ReviewDetailUpdateCommand command, List<MultipartFile> images,
+			List<String> pictureUrls) {
 		ReviewDetail reviewDetail = command.toReviewDetail();
 		int result = reviewDetailRepository.update(reviewDetail);
 
@@ -93,15 +95,15 @@ public class ReviewDetailService {
 		// S3에서 파일 삭제
 		List<ReviewPicture> existingPictures = reviewPictureRepository.findAllByReviewDetailId(reviewDetail.getId());
 		for (ReviewPicture picture : existingPictures) {
-	        if (pictureUrls == null || !pictureUrls.contains(picture.getUrl())) {
-	            fileStorageService.delete(picture.getUrl()); // S3에서 삭제
-	            reviewPictureRepository.delete(picture.getId()); // DB에서 삭제
-	        }
-	    }
-		
+			if (pictureUrls == null || !pictureUrls.contains(picture.getUrl())) {
+				fileStorageService.delete(picture.getUrl()); // S3에서 삭제
+				reviewPictureRepository.delete(picture.getId()); // DB에서 삭제
+			}
+		}
+
 		// 기존 데이터 삭제
 		reviewAttractionRepository.deleteAllByReviewDetailId(reviewDetail.getId());
-		
+
 		// reviewdetails-attractions
 		List<Attraction> attractions = new ArrayList<>();
 		for (Integer attractionId : command.attractions()) {
@@ -111,23 +113,24 @@ public class ReviewDetailService {
 
 		// reviewdetails-pictures
 		List<String> pictures = new ArrayList<>();
-		if(images != null) {
+		if (images != null) {
 			for (MultipartFile image : images) {
 				String storedUrl = fileStorageService.upload(image);
 				pictures.add(storedUrl);
 				reviewPictureRepository
 						.save(new ReviewPicture(reviewDetail.getId(), image.getOriginalFilename(), storedUrl));
-			}	
+			}
 		}
-		
-	    if (pictureUrls != null) {
-	        pictures.addAll(pictureUrls);
-	    }
-	    
+
+		if (pictureUrls != null) {
+			pictures.addAll(pictureUrls);
+		}
+
 		return ReviewDetailServiceResponse.from(reviewDetail, attractions, pictures);
 	}
 
 	public void deleteReviewDetailById(Integer id) {
+		System.out.println("삭제예정");
 		// 해당 id 값의 reviewDetail이 있는지 검증
 		Optional.ofNullable(reviewDetailRepository.findById(id))
 				.orElseThrow(() -> new CustomException(ErrorCode.REVIEWDETAILS_NOT_FOUND));
@@ -137,10 +140,11 @@ public class ReviewDetailService {
 		for (ReviewPicture reviewPicture : reviewPictures) {
 			fileStorageService.delete(reviewPicture.getUrl());
 		}
-
-		System.out.println(reviewAttractionRepository.deleteAllByReviewDetailId(id));
+		System.out.println("s3파일 삭제");
 		reviewPictureRepository.deleteAllByReviewDetailId(id);
+		System.out.println("db사진 삭제");
 		reviewDetailRepository.deleteById(id);
+		System.out.println("리뷰 디테일 삭제");
 	}
 
 	public List<ReviewDetailServiceResponse> findReviewDetailByReviewId(Integer reviewId) {

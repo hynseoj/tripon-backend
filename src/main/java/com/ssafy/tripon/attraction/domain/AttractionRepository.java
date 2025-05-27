@@ -15,7 +15,7 @@ public interface AttractionRepository {
 	Integer findAttraction(AttractionSaveCommand command);
 
 	// 관광지 단건 조회 - 타이틀 + 주소
-	Attraction findUniqueAttraction(AttractionSaveCommand command);
+	List<Attraction> findUniqueAttraction(AttractionSaveCommand command);
 
 	// 관광지 삽입
 	Integer saveCustomAttraction(CustomAttraction attraction);

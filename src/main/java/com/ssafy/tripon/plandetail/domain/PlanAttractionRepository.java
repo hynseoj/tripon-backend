@@ -13,4 +13,7 @@ public interface PlanAttractionRepository {
 	void deletePlanAttractionByPlanDetailId(Integer planDetailId);
 
 	void deletePlanAttractionByPlanDetailIdAndAttractionId(Integer planDetailId, Integer attractionId);
+	
+	// 조회
+	PlanAttraction findPlanAttraction(Integer planDetailId, Integer attractionId) ;
 }

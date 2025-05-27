@@ -5,6 +5,6 @@ import java.util.List;
 public record PlanDetailUpdateCommand(
 		Integer id,
 		Integer day,
-		List<Integer> attractions
+		List<PlanAttractionCommand> attractions
 		) {
 }

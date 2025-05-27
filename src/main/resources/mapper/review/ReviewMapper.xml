@@ -23,6 +23,19 @@
 		ORDER BY created_at desc
 	</select>
 
+	<select id="findAllByKeyword" resultType="Review">
+		SELECT id, member_email
+		as
+		memberEmail, title, created_at as createdAt,
+		updated_at as updatedAt,
+		thumbnail_original as thumbnailOriginal, thumbnail_url as thumbnailUrl
+		FROM reviews
+		WHERE title LIKE CONCAT('%', #{keyword}, '%')
+		ORDER BY
+		created_at desc
+	</select>
+
+
 	<select id="findAllReviewsByMemberId" resultType="Review">
 		SELECT id,
 		member_email as
@@ -62,8 +75,17 @@
 		UPDATE reviews
 		SET title =
 		#{title},
+		updated_at = NOW()
+		WHERE id = #{id}
+	</update>
+
+	<update id="updateWithThumbnail" parameterType="Review">
+		UPDATE reviews
+		SET title =
+		#{title},
 		updated_at = NOW(),
-		thumbnail_original = #{thumbnailOriginal},
+		thumbnail_original =
+		#{thumbnailOriginal},
 		thumbnail_url = #{thumbnailUrl}
 		WHERE id = #{id}
 	</update>
@@ -100,5 +122,60 @@
 		top_liked.like_count
 		DESC
 	</select>
+
+	<select id="findPagedSorted" resultType="Review">
+		SELECT id, member_email as
+		memberEmail, title, created_at as createdAt,
+		updated_at as updatedAt,
+		thumbnail_original as thumbnailOriginal,
+		thumbnail_url as thumbnailUrl
+		FROM reviews
+		<where>
+			<if test="keyword != null and keyword != ''">
+				title LIKE CONCAT('%', #{keyword}, '%')
+			</if>
+		</where>
+		ORDER BY created_at desc
+		LIMIT #{size} OFFSET #{offset}
+	</select>
+
+	<select id="countAll" resultType="int">
+		SELECT COUNT(*) FROM reviews
+		<where>
+			<if test="keyword != null and keyword != ''">
+				title LIKE CONCAT('%', #{keyword}, '%')
+			</if>
+		</where>
+	</select>
+
+	<select id="findPagedByLikeCount" resultType="Review">
+		SELECT id,
+		member_email as
+		memberEmail, title, created_at as createdAt,
+		updated_at
+		as updatedAt,
+		thumbnail_original as thumbnailOriginal,
+		thumbnail_url as
+		thumbnailUrl
+		FROM reviews r
+		LEFT JOIN (
+		SELECT review_id,
+		COUNT(*) AS
+		like_count
+		FROM liked_reviews
+
+		GROUP BY review_id
+		) l ON r.id =
+		l.review_id
+		<where>
+			<if test="keyword != null and keyword != ''">
+				title LIKE CONCAT('%', #{keyword}, '%')
+			</if>
+		</where>
+		ORDER BY COALESCE(l.like_count, 0) DESC, r.created_at DESC
+		LIMIT
+		#{size} OFFSET #{offset}
+	</select>
+
 
 </mapper>

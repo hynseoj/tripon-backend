@@ -55,6 +55,7 @@
 		ON pa.attraction_id = a.id
 		where d.id = #{planDetailId}
 		order by pa.order_number
+
 	</select>
 	
 	<delete id="deletePlanDetail">

@@ -1,41 +1,92 @@
-# 🌍 ENJOY TRIP 서비스 프로젝트
+# <img src="logo2.png" alt="oni-logo" height="35"> TripOn
 
-## 📝 프로젝트 개요
+## 목차
+- [🪧 개요 🪧](#-개요-)
+- [💫 핵심 기능 💫](#-핵심-기능-)
+- [🛠️ 기술 스택 🛠‍](#-기술-스택-)
+- [💠 ERD 💠](#-ERD-)
+- [🌠 화면 🌠](#-화면-)
+- [🎬 시연 영상 🎬](#-시연-영상-)
 
-본 프로젝트는 한국의 다양한 관광지, 먹거리, 축제, 행사 등을 소개하여 지역 관광 활성화를 위한 웹 서비스입니다. 한국관광공사에서 제공하는 국문관광정보서비스\_GW API를 활용하여 사용자에게 지역별 관광지 정보를 제공하고, 여행 계획 수립과 공유 기능을 지원합니다.
 
-## 🛠️ 기술 스택
+# 🪧 개요 🪧
 
-- **Frontend**: HTML, CSS, JavaScript, Bootstrap
+TripOn은 **여행 계획을 쉽고 편리하게 생성**하고,   
+관리, **공유**할 수 있도록 하는 웹 애플리케이션입니다.   
 
-- **Backend**: Java, Spring Boot, Spring MVC, Spring AOP
 
-- **Template Engine**: JSP (Tomcat Embedded Jasper)
+# 💫 핵심 기능 💫
 
-- **Persistence**: MyBatis 3.0.3
+### ✔ 관광지 등록
++ 공공데이터에 등록되지 않은 관광지를 계획 및 후기에 포함 하고 싶은 사용자들을 위해
+직접 관광지를 등록할 수 있는 기능을 제공합니다.
 
-- **Database**: MySQL
+### ✔ AI 계획 생성
++ 여행은 가고 싶지만 계획을 세우는 데 부담을 느끼는 사람들을 위해 원하는 테마와 장소 등을 입력해 일차별 여행 계획을 생성할 수 있습니다.
 
-- **API 문서화**: Swagger
+### ✔ 계획 실시간 동시 편집
++ 여행 메이트와 함께 계획을 편집할 수 있습니다.
++ 편리한 사용을 위해 링크를 생성해 공유하는 방식으로 구현했습니다.
 
-- **유틸 및 기타**: Lombok, Devtools, JUnit
 
-- **개발 도구**: VS Code, Figma, Maven
+# 🛠️ 기술 스택 🛠
 
-- **데이터 소스**: 한국관광공사 국문관광정보서비스\_GW API
+### 💻 Frontend   
++ 프레임워크: Vue 3
++ 상태 관리: Pinia
++ 스타일링: Tailwind CSS
++ HTTP 통신: Axios
++ 지도 서비스: Kakao Maps
 
-## ERD
+### 💻 Backend   
++ 언어: Java
++ 프레임워크: Spring Boot, Spring MVC
++ AI 연동: Spring AI
++ API 문서화: Swagger UI
++ 보안 및 인증: JWT
++ WebSocket: Spring WebSocket, STOMP
 
-## 🖼️ 화면
+### 🗃️ Database & Persistence
++ ORM/SQL 매퍼: MyBatis
++ 데이터베이스: MySQL
++ 세션 관리: Spring Session Redis
++ 캐시/데이터 저장소: Spring Data Redis
 
-메인 페이지
-![alt text](image.png)
+### 🛠️ 개발 도구 및 기타
++ 유틸리티: Lombok, Spring Boot DevTools
++ 테스트: JUnit (Spring Boot Starter Test)
++ 개발 툴: VS Code, Figma
++ 빌드 도구: Maven
 
-로그인 페이지
-![alt text](image-1.png)
 
-글 목록
-![alt text](image-2.png)
+# 💠 ERD 💠
+![erd.png](erd.png)
 
-글 단건 조회
-![alt text](image-3.png)
+
+# 🌠 화면 🌠
+
+### 메인 페이지
+![img.png](img.png)
+![img_1.png](img_1.png)
+   
+
+### 여행 계획
+![img_2.png](img_2.png)
+![img_3.png](img_3.png)
+
+   
+### 여행 후기
+![img_4.png](img_4.png)
+![img_5.png](img_5.png)
+
+
+### 관광지 검색
+![img_6.png](img_6.png)
+
+
+### 마이페이지
+![img_7.png](img_7.png)
+
+
+# 🎬 시연 영상 🎬
+<a href="https://youtu.be/04iJ66N5gAk"><img src="https://img.youtube.com/vi/04iJ66N5gAk/maxresdefault.jpg" alt="test" height="300"></a>
